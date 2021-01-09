@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: SAM Template for BIS-Cloud
+Globals:
+  Function:
+    Timeout: 900
+
+Resources:
+  FunctionWithNoDependencies:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: FunctionWithNoDependencies
+      CodeUri: serverless/dynamoStream/
+      Handler: dynamoStreamHandler.lambda_handler
+      Runtime: python3.6
+      Layers:
+        - !Ref CustomAppLayers
+
+  CustomAppLayers:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: CustomAppLayers
+      Description: Owner modules
+      ContentUri: ../../CloudCore/python
+      RetentionPolicy: Delete
+      LicenseInfo: MIT
+      CompatibleRuntimes:
+        - python3.6
+    Metadata:
+      BuildMethod: python3.6
