@@ -2,35 +2,54 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: SAM Template for BIS-Cloud
 Globals:
-  Function:
-    Timeout: 900
+    Function:
+        Timeout: 900
 
 Parameters:
-  PackagesLayerArn:
-    Type: String
-    Default: arn:aws:lambda:us-east-1:320132171574:layer:PythonPackagesLayer:6
+    PackagesLayerArn:
+        Type: String
+        Default: arn:aws:lambda:us-east-1:320132171574:layer:PythonPackagesLayer:6
 
 Resources:
-  FunctionWithNoDependencies:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: FunctionWithNoDependencies
-      CodeUri: serverless/dynamoStream/
-      Handler: dynamoStreamHandler.lambda_handler
-      Runtime: python3.6
-      Layers:
-        - !Ref CustomAppLayers
-        - !Ref PackagesLayerArn
+    UsersDynamoStreamHandle:
+        Type: AWS::Serverless::Function
+        Properties:
+            FunctionName: UsersDynamoStreamHandle
+            CodeUri: serverless/dynamoStream/
+            Handler: dynamoStreamHandler.lambda_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                # Give DynamoDB Full Access to your Lambda Function
+                - AmazonDynamoDBFullAccess
+                - AmazonSNSFullAccess
+                - AWSLambdaDynamoDBExecutionRole
+                -   Version: '2012-10-17' # Policy Document
+                    Statement:
+                        -   Effect: Allow
+                            Action:
+                                - sns:*
+                            Resource: 'arn:aws:dynamodb:*:*:table/dynamo_db_table_endpoint'
+            Events:
+                Stream:
+                    Type: DynamoDB
+                    Properties:
+                        Stream: arn:aws:dynamodb:us-east-1:320132171574:table/users-test/stream/2021-01-10T16:45:55.520
+                        BatchSize: 100
+                        StartingPosition: TRIM_HORIZON
 
-  CustomAppLayers:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      LayerName: CustomAppLayers
-      Description: Owner modules
-      ContentUri: ../../CloudCore/python
-      RetentionPolicy: Delete
-      LicenseInfo: MIT
-      CompatibleRuntimes:
-        - python3.6
-    Metadata:
-      BuildMethod: python3.6
+
+    CustomAppLayers:
+        Type: AWS::Serverless::LayerVersion
+        Properties:
+            LayerName: CustomAppLayers
+            Description: Owner modules
+            ContentUri: ../../CloudCore/python
+            RetentionPolicy: Retain
+            LicenseInfo: MIT
+            CompatibleRuntimes:
+                - python3.6
+        Metadata:
+            BuildMethod: python3.6
