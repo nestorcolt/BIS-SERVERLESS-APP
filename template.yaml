@@ -14,7 +14,10 @@ Resources:
     UsersDynamoStreamHandle:
         Type: AWS::Serverless::Function
         Properties:
+            MemorySize: 2048
+            Timeout: 5
             FunctionName: UsersDynamoStreamHandle
+            Description: Handles dynamodb streams from users table
             CodeUri: serverless/dynamoStream/
             Handler: dynamoStreamHandler.lambda_handler
             Runtime: python3.6
