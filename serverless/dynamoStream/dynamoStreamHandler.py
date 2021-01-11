@@ -1,11 +1,7 @@
 from Cloud.packages.constants import constants
 from Cloud.packages.sns import sns_manager
 from Cloud.packages import logger
-import importlib
 import json
-
-importlib.reload(constants)
-importlib.reload(sns_manager)
 
 LOGGER = logger.Logger(__name__)
 log = LOGGER.logger

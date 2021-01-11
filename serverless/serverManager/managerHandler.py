@@ -1,13 +1,8 @@
-from Cloud.packages.Ec2 import instance_initializer
+from Cloud.packages.Ec2 import instance_initializer, ec2_manager
 from Cloud.packages.constants import constants
 from Cloud.packages.utilities import utils
 from Cloud.packages import logger
-import importlib
 import json
-
-importlib.reload(instance_initializer)
-importlib.reload(constants)
-importlib.reload(utils)
 
 LOGGER = logger.Logger(__name__)
 log = LOGGER.logger
@@ -15,7 +10,7 @@ log = LOGGER.logger
 
 ##############################################################################################
 
-def lambda_handler(event, context):
+def start_handler(event, context):
     # Get the records list
     records = event["Records"][0]
 
@@ -39,8 +34,72 @@ def lambda_handler(event, context):
     return {
         "statusCode": 200,
         "body": json.dumps({
-            "message": "InfoProcessed",
+            "message": f"Instance created for user: {user_id_value}",
         }),
     }
 
+
 ##############################################################################################
+
+
+def terminate_handler(event, context):
+    # Get the records list
+    records = event["Records"][0]
+
+    try:
+        message = json.loads(records["Sns"]["Message"])
+        user_id = message.get("userId")
+
+        if user_id:
+            user_id_value = utils.sns_get_value(user_id)
+            instance_name = f"User-{user_id_value}"
+
+            # Ec2 instance delete
+            ec2_manager.delete_instance_handle(instance_name)
+
+    except Exception as e:
+        # Send some context about this error to Lambda Logs
+        log.error(e)
+        raise e
+
+    return {
+        "statusCode": 200,
+        "body": json.dumps({
+            "message": f"Instance deleted for user: {user_id_value}",
+        }),
+    }
+
+
+##############################################################################################
+
+
+def modify_state_handler(event, context):
+    # Get the records list
+    records = event["Records"][0]
+
+    try:
+        message = json.loads(records["Sns"]["Message"])
+        state = message.get("blockSearch")
+        user_id = message.get("userId")
+
+        if user_id and state:
+            user_search_state_value = utils.sns_get_value(state)
+            user_id_value = utils.sns_get_value(user_id)
+            instance_name = f"User-{user_id_value}"
+
+            if user_search_state_value is True:
+                ec2_manager.start_instance_handle(instance_name)
+            else:
+                ec2_manager.stop_instance_handle(instance_name)
+
+    except Exception as e:
+        # Send some context about this error to Lambda Logs
+        log.error(e)
+        raise e
+
+    return {
+        "statusCode": 200,
+        "body": json.dumps({
+            "message": f"Instance state modified for user: {user_id_value}",
+        }),
+    }

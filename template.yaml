@@ -58,7 +58,7 @@ Resources:
             FunctionName: StartSearchEngineInstance
             Description: Handles the start of a search engine Ec2 instance
             CodeUri: serverless/serverManager/
-            Handler: managerHandler.lambda_handler
+            Handler: managerHandler.start_handler
             Runtime: python3.6
             Layers:
                 - !Ref CustomAppLayers
@@ -72,4 +72,47 @@ Resources:
                     Properties:
                         Topic: arn:aws:sns:us-east-1:320132171574:SE-START-SERVICE
 
+    TerminateSearchEngineInstance:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 1024
+            Timeout: 5
+            FunctionName: TerminateSearchEngineInstance
+            Description: Handles the termination of a search engine Ec2 instance
+            CodeUri: serverless/serverManager/
+            Handler: managerHandler.terminate_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                - AmazonSNSFullAccess
+                - AmazonEC2FullAccess
+            Events:
+                SNSEvent:
+                    Type: SNS
+                    Properties:
+                        Topic: arn:aws:sns:us-east-1:320132171574:SE-STOP-SERVICE
 
+
+    ModifyStateSearchEngineInstance:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 1024
+            Timeout: 5
+            FunctionName: ModifyStateSearchEngineInstance
+            Description: Handles the state swap of a search engine Ec2 instance
+            CodeUri: serverless/serverManager/
+            Handler: managerHandler.modify_state_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                - AmazonSNSFullAccess
+                - AmazonEC2FullAccess
+            Events:
+                SNSEvent:
+                    Type: SNS
+                    Properties:
+                        Topic: arn:aws:sns:us-east-1:320132171574:SE-PAUSE-SERVICE
