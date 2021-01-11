@@ -28,7 +28,7 @@ Resources:
         Type: AWS::Serverless::Function
         Properties:
             MemorySize: 2048
-            Timeout: 5
+            Timeout: 20
             FunctionName: UsersDynamoStreamHandle
             Description: Handles dynamodb streams from users table
             CodeUri: serverless/dynamoStream/
@@ -54,7 +54,7 @@ Resources:
         Type: AWS::Serverless::Function
         Properties:
             MemorySize: 1024
-            Timeout: 5
+            Timeout: 20
             FunctionName: StartSearchEngineInstance
             Description: Handles the start of a search engine Ec2 instance
             CodeUri: serverless/serverManager/
@@ -76,7 +76,7 @@ Resources:
         Type: AWS::Serverless::Function
         Properties:
             MemorySize: 1024
-            Timeout: 5
+            Timeout: 20
             FunctionName: TerminateSearchEngineInstance
             Description: Handles the termination of a search engine Ec2 instance
             CodeUri: serverless/serverManager/
