@@ -65,6 +65,7 @@ Resources:
                 - !Ref PackagesLayerArn
             Policies:
                 - AmazonSNSFullAccess
+                - AmazonEC2FullAccess
             Events:
                 SNSEvent:
                     Type: SNS

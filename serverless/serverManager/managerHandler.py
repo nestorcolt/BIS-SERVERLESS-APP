@@ -17,15 +17,16 @@ log = LOGGER.logger
 
 def lambda_handler(event, context):
     # Get the records list
-    records = event["Records"]
+    records = event["Records"][0]
 
     try:
-        message = records["Message"]
-        user_id = utils.sns_get_value(message["userId"])
+        message = json.loads(records["Sns"]["Message"])
+        user_id = message.get("userId")
 
         if user_id:
+            user_id_value = utils.sns_get_value(user_id)
             # New instance is created with user ID on its name [User-ID]
-            instance_initializer.create_instance_handle_from_template(user_id,
+            instance_initializer.create_instance_handle_from_template(user_id_value,
                                                                       constants.WORKER_LAUNCH_TEMPLATE_NAME,
                                                                       constants.WORKER_SECURITY_GROUP_NAME,
                                                                       constants.SUBNET_NAME)
