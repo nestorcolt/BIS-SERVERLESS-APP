@@ -11,6 +11,19 @@ Parameters:
         Default: arn:aws:lambda:us-east-1:320132171574:layer:PythonPackagesLayer:6
 
 Resources:
+    CustomAppLayers:
+        Type: AWS::Serverless::LayerVersion
+        Properties:
+            LayerName: CustomAppLayers
+            Description: Owner modules
+            ContentUri: ../../CloudCore/python
+            RetentionPolicy: Retain
+            LicenseInfo: MIT
+            CompatibleRuntimes:
+                - python3.6
+        Metadata:
+            BuildMethod: python3.6
+
     UsersDynamoStreamHandle:
         Type: AWS::Serverless::Function
         Properties:
@@ -29,12 +42,6 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - AmazonSNSFullAccess
                 - AWSLambdaDynamoDBExecutionRole
-                -   Version: '2012-10-17' # Policy Document
-                    Statement:
-                        -   Effect: Allow
-                            Action:
-                                - sns:*
-                            Resource: 'arn:aws:dynamodb:*:*:table/dynamo_db_table_endpoint'
             Events:
                 Stream:
                     Type: DynamoDB
@@ -43,16 +50,25 @@ Resources:
                         BatchSize: 100
                         StartingPosition: TRIM_HORIZON
 
-
-    CustomAppLayers:
-        Type: AWS::Serverless::LayerVersion
+    StartSearchEngineInstance:
+        Type: AWS::Serverless::Function
         Properties:
-            LayerName: CustomAppLayers
-            Description: Owner modules
-            ContentUri: ../../CloudCore/python
-            RetentionPolicy: Retain
-            LicenseInfo: MIT
-            CompatibleRuntimes:
-                - python3.6
-        Metadata:
-            BuildMethod: python3.6
+            MemorySize: 1024
+            Timeout: 5
+            FunctionName: StartSearchEngineInstance
+            Description: Handles the start of a search engine Ec2 instance
+            CodeUri: serverless/serverManager/
+            Handler: managerHandler.lambda_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                - AmazonSNSFullAccess
+            Events:
+                SNSEvent:
+                    Type: SNS
+                    Properties:
+                        Topic: arn:aws:sns:us-east-1:320132171574:SE-START-SERVICE
+
+
