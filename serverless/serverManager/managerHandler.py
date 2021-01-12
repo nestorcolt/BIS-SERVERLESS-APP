@@ -16,7 +16,7 @@ def start_handler(event, context):
 
     try:
         message = json.loads(records["Sns"]["Message"])
-        user_id = message.get("userId")
+        user_id = message.get("user_id")
 
         if user_id:
             user_id_value = utils.sns_get_value(user_id)
@@ -48,7 +48,7 @@ def terminate_handler(event, context):
 
     try:
         message = json.loads(records["Sns"]["Message"])
-        user_id = message.get("userId")
+        user_id = message.get("user_id")
 
         if user_id:
             user_id_value = utils.sns_get_value(user_id)
@@ -79,8 +79,8 @@ def modify_state_handler(event, context):
 
     try:
         message = json.loads(records["Sns"]["Message"])
-        state = message.get("blockSearch")
-        user_id = message.get("userId")
+        state = message.get("search_blocks")
+        user_id = message.get("user_id")
 
         if user_id and state:
             user_search_state_value = utils.sns_get_value(state)

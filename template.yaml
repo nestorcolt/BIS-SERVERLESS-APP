@@ -66,6 +66,7 @@ Resources:
             Policies:
                 - AmazonSNSFullAccess
                 - AmazonEC2FullAccess
+                - IAMFullAccess
             Events:
                 SNSEvent:
                     Type: SNS
