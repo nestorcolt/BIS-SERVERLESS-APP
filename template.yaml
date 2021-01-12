@@ -5,10 +5,19 @@ Globals:
     Function:
         Timeout: 900
 
+
 Parameters:
     PackagesLayerArn:
         Type: String
         Default: arn:aws:lambda:us-east-1:320132171574:layer:PythonPackagesLayer:6
+    BranchName:
+        Default: master
+        Description: The GIT branch
+        Type: String
+    RepositoryName:
+        Default: FlexSearchEngine
+        Description: The GIT repository
+        Type: String
 
 Resources:
     CustomAppLayers:
@@ -117,6 +126,42 @@ Resources:
                     Type: SNS
                     Properties:
                         Topic: arn:aws:sns:us-east-1:320132171574:SE-PAUSE-SERVICE
+
+    CodeCommitLambdaHandler:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 3072
+            Timeout: 360
+            FunctionName: CodeCommitLambdaHandler
+            Description: Handles code commit
+            CodeUri: serverless/codeCommit/
+            Handler: commitHandler.lambda_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref PackagesLayerArn
+            Policies:
+                # Give DynamoDB Full Access to your Lambda Function
+                - AWSCodeCommitReadOnly
+                - AWSLambdaExecute
+                - AmazonSSMFullAccess
+            Events:
+                CodeCommitPushEvent:
+                    Type: CloudWatchEvent
+                    Properties:
+                        Pattern:
+                            source:
+                                - aws.codecommit
+                            resources:
+                                - arn:aws:codecommit:us-east-1:320132171574:FlexSearchEngine
+                            detail:
+                                event:
+                                    - referenceCreated
+                                    - referenceUpdated
+                                repositoryName:
+                                    - !Ref RepositoryName
+                                referenceName:
+                                    - !Ref BranchName
+
 
     DynamoDBTable:
         Type: AWS::DynamoDB::Table
