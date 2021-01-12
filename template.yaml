@@ -46,7 +46,7 @@ Resources:
                 Stream:
                     Type: DynamoDB
                     Properties:
-                        Stream: arn:aws:dynamodb:us-east-1:320132171574:table/users-test/stream/2021-01-10T16:45:55.520
+                        Stream: arn:aws:dynamodb:us-east-1:320132171574:table/Users/stream/2021-01-12T16:46:15.772
                         BatchSize: 100
                         StartingPosition: TRIM_HORIZON
 
@@ -116,3 +116,19 @@ Resources:
                     Type: SNS
                     Properties:
                         Topic: arn:aws:sns:us-east-1:320132171574:SE-PAUSE-SERVICE
+
+    DynamoDBTable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+            TableName: Users
+            StreamSpecification:
+                StreamViewType: NEW_IMAGE
+            AttributeDefinitions:
+                -   AttributeName: user_id
+                    AttributeType: N
+            KeySchema:
+                -   AttributeName: user_id
+                    KeyType: HASH
+            ProvisionedThroughput:
+                ReadCapacityUnits: 1
+                WriteCapacityUnits: 1
