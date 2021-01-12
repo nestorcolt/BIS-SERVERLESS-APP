@@ -11,7 +11,7 @@ REPO = "FlexSearchEngine"
 
 def lambda_handler(event, context):
     # target bucket
-    bucket = BUCKET_NAME
+    bucket = boto3.resource('s3').Bucket(BUCKET_NAME)
 
     # source codecommit
     codecommit = boto3.client('codecommit', region_name=CODE_COMMIT_REGION)
