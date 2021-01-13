@@ -10,7 +10,6 @@ REPO = "FlexSearchEngine"
 ##############################################################################################
 
 def lambda_handler(event, context):
-    print(event)
 
     # target bucket
     bucket = boto3.resource('s3').Bucket(BUCKET_NAME)
@@ -29,7 +28,7 @@ def lambda_handler(event, context):
 
     else:
         # Current HEAD SHA-1 id
-        head = event['Records'][0]['codecommit']['references'][0]['commit']
+        head = event["detail"]['commitId']
 
         ssm_client = boto3.client('ssm')
         ssm_param_name = repository_name + '_beforeCommitSpecifier'
@@ -61,19 +60,22 @@ def get_blob_list(codecommit, repository, afterCommitSpecifier, beforeCommitSpec
         args['beforeCommitSpecifier'] = beforeCommitSpecifier
 
     response = codecommit.get_differences(**args)
-
-    blob_list = [difference['afterBlob'] for difference in response['differences']]
+    blob_list_ = [difference.get('afterBlob', None) for difference in response['differences']]
+    blob_list = [itm for itm in blob_list_ if itm is not None]
 
     while 'NextToken' in response:
         args['NextToken'] = response['NextToken']
         response = codecommit.get_differences(**args)
-        blob_list += [difference['afterBlob'] for difference in response['differences']]
+        loop_blob_ = [difference.get('afterBlob', None) for difference in response['differences']]
+        loop_blob = [itm for itm in loop_blob_ if itm is not None]
+        blob_list += loop_blob
 
     return blob_list
 
 
 def upload_files_to_s3_bucket(bucket, codecommit, repository_name, blob_list):
     # reads each file in the branch and uploads it to the s3 bucket
+    print(blob_list)
     for blob in blob_list:
         path = blob['path']
         content = (codecommit.get_blob(repositoryName=repository_name, blobId=blob['blobId']))['content']
