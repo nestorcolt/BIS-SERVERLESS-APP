@@ -2,14 +2,16 @@ import mimetypes
 import boto3
 import os
 
-BUCKET_NAME = "bis-se-s3"
 CODE_COMMIT_REGION = "us-east-1"
+BUCKET_NAME = "bis-se-s3"
 REPO = "FlexSearchEngine"
 
 
 ##############################################################################################
 
 def lambda_handler(event, context):
+    print(event)
+
     # target bucket
     bucket = boto3.resource('s3').Bucket(BUCKET_NAME)
 
