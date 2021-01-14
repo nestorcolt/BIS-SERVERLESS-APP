@@ -37,6 +37,22 @@ Resources:
                 ReadCapacityUnits: 1
                 WriteCapacityUnits: 1
 
+    BlocksTable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+            TableName: Blocks
+            StreamSpecification:
+                StreamViewType: NEW_IMAGE
+            AttributeDefinitions:
+                -   AttributeName: user_id
+                    AttributeType: N
+            KeySchema:
+                -   AttributeName: user_id
+                    KeyType: HASH
+            ProvisionedThroughput:
+                ReadCapacityUnits: 1
+                WriteCapacityUnits: 1
+
     # Lambda layers
     CustomAppLayers:
         Type: AWS::Serverless::LayerVersion
@@ -146,40 +162,72 @@ Resources:
                     Properties:
                         Topic: arn:aws:sns:us-east-1:320132171574:SE-PAUSE-SERVICE
 
-    CodeCommitLambdaHandler:
+
+    InstancePutToSleep:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 3072
-            Timeout: 360
-            FunctionName: CodeCommitLambdaHandler
-            Description: Handles code commit
-            CodeUri: serverless/codeCommit/
-            Handler: commitHandler.lambda_handler
+            MemorySize: 1024
+            Timeout: 5
+            FunctionName: InstancePutToSleep
+            Description: Handles the instance to sleep when the se exceed the max request
+            CodeUri: serverless/serverManager/
+            Handler: instanceState.sleep_handler
             Runtime: python3.6
             Layers:
+                - !Ref CustomAppLayers
                 - !Ref PackagesLayerArn
             Policies:
-                # Give DynamoDB Full Access to your Lambda Function
-                - AWSCodeCommitReadOnly
-                - AWSLambdaExecute
-                - AmazonSSMFullAccess
+                - AmazonDynamoDBFullAccess
+                - AmazonSNSFullAccess
+                - AmazonEC2FullAccess
             Events:
-                CodeCommitPushEvent:
-                    Type: CloudWatchEvent
+                SNSEvent:
+                    Type: SNS
                     Properties:
-                        Pattern:
-                            source:
-                                - aws.codecommit
-                            resources:
-                                - arn:aws:codecommit:us-east-1:320132171574:FlexSearchEngine
-                            detail:
-                                event:
-                                    - referenceCreated
-                                    - referenceUpdated
-                                repositoryName:
-                                    - !Ref RepositoryName
-                                referenceName:
-                                    - !Ref BranchName
+                        Topic: arn:aws:sns:us-east-1:320132171574:SE-SLEEP-INSTANCE-SERVICE
 
 
+    InstanceWakeUp:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 1024
+            Timeout: 5
+            FunctionName: InstanceWakeUp
+            Description: Handles the instance wake up after 31 mins of being asleep
+            CodeUri: serverless/serverManager/
+            Handler: instanceState.wakeup_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                - AmazonSNSFullAccess
+                - AmazonEC2FullAccess
+            Events:
+                SNSEvent:
+                    Type: SNS
+                    Properties:
+                        Topic: arn:aws:sns:us-east-1:320132171574:SE-AWAKE-INSTANCE-SERVICE
 
+
+    CronoLambda1Minute:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 2048
+            Timeout: 60
+            FunctionName: CronoLambda1Minute
+            Description: Check dynamo db every minute to wake up every asleep ec2 instance
+            CodeUri: serverless/cronoLambdas/
+            Handler: sleepStatusCheck.sleep_status_check_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                - AmazonDynamoDBFullAccess
+                - AmazonSNSFullAccess
+            Events:
+                StartScheduledEvent:
+                    Type: Schedule
+                    Properties:
+                        Schedule: cron(0/1 * * * ? *)
