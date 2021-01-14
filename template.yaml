@@ -5,7 +5,6 @@ Globals:
     Function:
         Timeout: 900
 
-
 Parameters:
     PackagesLayerArn:
         Type: String
@@ -138,77 +137,6 @@ Resources:
                     Type: SNS
                     Properties:
                         Topic: arn:aws:sns:us-east-1:320132171574:SE-STOP-SERVICE
-
-
-    ModifyStateSearchEngineInstance:
-        Type: AWS::Serverless::Function
-        Properties:
-            MemorySize: 1024
-            Timeout: 5
-            FunctionName: ModifyStateSearchEngineInstance
-            Description: Handles the state swap of a search engine Ec2 instance
-            CodeUri: serverless/serverManager/
-            Handler: managerHandler.modify_state_handler
-            Runtime: python3.6
-            Layers:
-                - !Ref CustomAppLayers
-                - !Ref PackagesLayerArn
-            Policies:
-                - AmazonSNSFullAccess
-                - AmazonEC2FullAccess
-            Events:
-                SNSEvent:
-                    Type: SNS
-                    Properties:
-                        Topic: arn:aws:sns:us-east-1:320132171574:SE-PAUSE-SERVICE
-
-
-    InstancePutToSleep:
-        Type: AWS::Serverless::Function
-        Properties:
-            MemorySize: 1024
-            Timeout: 5
-            FunctionName: InstancePutToSleep
-            Description: Handles the instance to sleep when the se exceed the max request
-            CodeUri: serverless/serverManager/
-            Handler: instanceState.sleep_handler
-            Runtime: python3.6
-            Layers:
-                - !Ref CustomAppLayers
-                - !Ref PackagesLayerArn
-            Policies:
-                - AmazonDynamoDBFullAccess
-                - AmazonSNSFullAccess
-                - AmazonEC2FullAccess
-            Events:
-                SNSEvent:
-                    Type: SNS
-                    Properties:
-                        Topic: arn:aws:sns:us-east-1:320132171574:SE-SLEEP-INSTANCE-SERVICE
-
-
-    InstanceWakeUp:
-        Type: AWS::Serverless::Function
-        Properties:
-            MemorySize: 1024
-            Timeout: 5
-            FunctionName: InstanceWakeUp
-            Description: Handles the instance wake up after 31 mins of being asleep
-            CodeUri: serverless/serverManager/
-            Handler: instanceState.wakeup_handler
-            Runtime: python3.6
-            Layers:
-                - !Ref CustomAppLayers
-                - !Ref PackagesLayerArn
-            Policies:
-                - AmazonSNSFullAccess
-                - AmazonEC2FullAccess
-            Events:
-                SNSEvent:
-                    Type: SNS
-                    Properties:
-                        Topic: arn:aws:sns:us-east-1:320132171574:SE-AWAKE-INSTANCE-SERVICE
-
 
     CronoLambda1Minute:
         Type: AWS::Serverless::Function

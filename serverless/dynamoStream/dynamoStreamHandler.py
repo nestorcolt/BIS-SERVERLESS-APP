@@ -73,5 +73,6 @@ def process_record(record):
     elif event_name == "MODIFY":
         image_data = record_info.get("NewImage")
         log.debug(f"ModifyEvent: {image_data}")
-        topic_arn = sns_manager.get_topic_by_name(constants.PAUSE_SE_SNS_NAME)[0]["TopicArn"]
-        sns_manager.sns_publish_to_topic(topic_arn=topic_arn, message=json.dumps(image_data), subject="DynamoStream")
+        user_id_value = utils.sns_get_value(image_data["user_id"])
+        topic_arn = sns_manager.get_topic_by_name(constants.STOP_SE_SNS_NAME)[0]["TopicArn"]
+        sns_manager.sns_publish_to_topic(topic_arn=topic_arn, message=json.dumps(user_id_value), subject="DynamoStream")
