@@ -1,5 +1,6 @@
 from Cloud.packages.constants import constants
 from Cloud.packages.sns import sns_manager
+from Cloud.packages.utilities import utils
 from Cloud.packages import logger
 import json
 
@@ -58,14 +59,16 @@ def process_record(record):
     if event_name == "INSERT":
         image_data = record_info.get("NewImage")
         log.debug(f"CreateEvent: {image_data}")
+        user_id_value = utils.sns_get_value(image_data["user_id"])
         topic_arn = sns_manager.get_topic_by_name(constants.START_SE_SNS_NAME)[0]["TopicArn"]
-        sns_manager.sns_publish_to_topic(topic_arn=topic_arn, message=json.dumps(image_data), subject="DynamoStream")
+        sns_manager.sns_publish_to_topic(topic_arn=topic_arn, message=json.dumps(user_id_value), subject="DynamoStream")
 
     elif event_name == "REMOVE":
         image_data = record_info.get("Keys")
         log.debug(f"DeleteEvent: {image_data}")
+        user_id_value = utils.sns_get_value(image_data["user_id"])
         topic_arn = sns_manager.get_topic_by_name(constants.STOP_SE_SNS_NAME)[0]["TopicArn"]
-        sns_manager.sns_publish_to_topic(topic_arn=topic_arn, message=json.dumps(image_data), subject="DynamoStream")
+        sns_manager.sns_publish_to_topic(topic_arn=topic_arn, message=json.dumps(user_id_value), subject="DynamoStream")
 
     elif event_name == "MODIFY":
         image_data = record_info.get("NewImage")

@@ -1,7 +1,9 @@
 from Cloud.packages.Ec2 import instance_initializer, ec2_manager
 from Cloud.packages.constants import constants
 from Cloud.packages.utilities import utils
+from Cloud.packages.dynamo import modules
 from Cloud.packages import logger
+import boto3
 import time
 import json
 
@@ -12,6 +14,8 @@ log = LOGGER.logger
 ##############################################################################################
 
 def sleep_status_check_handler(event, context):
-    # Get the records list
+    last_active = modules.get_last_active_users()
 
-    log.info("Cron-lambda")
+    for user in last_active:
+        print(user)
+
