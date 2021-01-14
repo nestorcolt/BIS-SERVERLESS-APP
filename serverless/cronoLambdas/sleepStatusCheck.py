@@ -18,10 +18,13 @@ def sleep_status_check_handler(event, context):
     """
     last_active = modules.get_last_active_users()
 
-    for user in last_active:
-        topic_arn = sns_manager.get_topic_by_name(constants.START_SE_SNS_NAME)[0]["TopicArn"]
-        sns_manager.sns_publish_to_topic(topic_arn=topic_arn,
-                                         message=json.dumps(user["user_id"]),
-                                         subject="SleepCheckEvent")
+    for user in last_active["Items"]:
+        search_blocks = user.get("search_blocks", False)
+
+        if search_blocks:
+            topic_arn = sns_manager.get_topic_by_name(constants.START_SE_SNS_NAME)[0]["TopicArn"]
+            sns_manager.sns_publish_to_topic(topic_arn=topic_arn,
+                                             message=json.dumps(str(user["user_id"])),
+                                             subject="SleepCheckEvent")
 
 ##############################################################################################
