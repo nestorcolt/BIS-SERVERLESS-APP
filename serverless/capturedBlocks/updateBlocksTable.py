@@ -6,7 +6,8 @@ import json
 
 def lambda_handler(event, context):
     """
-    Clean up the table blocks from blocks older than 48 hours from the time the function is called
+    Triggered by an SNS event will put a new entry on the blocks table with the captured blocks from the user.
+    This SNS event will be called inside of an Ec2 instance from the search engine
     """
     # Get the records list
     records = event["Records"][0]
@@ -14,6 +15,6 @@ def lambda_handler(event, context):
 
     for block in blocks:
         modules.put_new_block(block["user_id"], block["data"])
-        # TODO better to log this for cloud watch debbuging
+        # TODO better to log this for cloud watch debugging
 
 ##############################################################################################
