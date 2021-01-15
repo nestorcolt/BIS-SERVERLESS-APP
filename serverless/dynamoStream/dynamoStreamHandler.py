@@ -54,7 +54,7 @@ def get_value_from_dynamo_format(value_pair):
     :return:
     """
     result = list(value_pair.values())
-    print(result)
+
     if result:
         return result[0]
 
@@ -85,17 +85,20 @@ def process_record(record):
     elif event_name == "MODIFY":
         image_data = record_info.get("NewImage")
         log.debug(f"ModifyEvent: {image_data}")
-        search_blocks_value = get_value_from_dynamo_format(image_data["search_blocks"])
+        search_key_value = image_data.get("search_blocks", False)
         user_id_value = get_value_from_dynamo_format(image_data["user_id"])
 
-        if search_blocks_value:
+        if search_key_value:
             # is the event is for changing the block search == true will only turn on the server
-            topic_arn = sns_manager.get_topic_by_name(constants.START_SE_SNS_NAME)[0]["TopicArn"]
-            sns_manager.sns_publish_to_topic(topic_arn=topic_arn,
-                                             message=json.dumps(user_id_value),
-                                             subject="DynamoStream")
-            # exit the function
-            return
+            search_blocks_value = get_value_from_dynamo_format(search_key_value)
+
+            if search_blocks_value:
+                topic_arn = sns_manager.get_topic_by_name(constants.START_SE_SNS_NAME)[0]["TopicArn"]
+                sns_manager.sns_publish_to_topic(topic_arn=topic_arn,
+                                                 message=json.dumps(user_id_value),
+                                                 subject="DynamoStream")
+                # exit the function
+                return
 
         # other wise if any other modify event happens will shut it down anyway
         topic_arn = sns_manager.get_topic_by_name(constants.STOP_SE_SNS_NAME)[0]["TopicArn"]
