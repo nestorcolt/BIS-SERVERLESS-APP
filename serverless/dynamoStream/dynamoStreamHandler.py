@@ -95,7 +95,7 @@ def process_record(record):
             old_search_key_value = old_image_data.get("search_blocks", False)
             old_search_blocks_value = get_value_from_dynamo_format(old_search_key_value)  # from old image
 
-            if search_blocks_value and search_key_value != old_search_blocks_value:
+            if search_blocks_value and search_blocks_value != old_search_blocks_value:
                 topic_arn = sns_manager.get_topic_by_name(constants.START_SE_SNS_NAME)[0]["TopicArn"]
                 sns_manager.sns_publish_to_topic(topic_arn=topic_arn,
                                                  message=json.dumps(user_id_value),
