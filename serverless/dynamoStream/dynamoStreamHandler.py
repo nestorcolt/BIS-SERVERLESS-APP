@@ -90,9 +90,12 @@ def process_record(record):
 
         if search_key_value:
             # is the event is for changing the block search == true will only turn on the server
-            search_blocks_value = get_value_from_dynamo_format(search_key_value)
+            search_blocks_value = get_value_from_dynamo_format(search_key_value)  # from new image
+            old_image_data = record_info.get("OldImage")
+            old_search_key_value = old_image_data.get("search_blocks", False)
+            old_search_blocks_value = get_value_from_dynamo_format(old_search_key_value)  # from old image
 
-            if search_blocks_value:
+            if search_blocks_value and search_key_value != old_search_blocks_value:
                 topic_arn = sns_manager.get_topic_by_name(constants.START_SE_SNS_NAME)[0]["TopicArn"]
                 sns_manager.sns_publish_to_topic(topic_arn=topic_arn,
                                                  message=json.dumps(user_id_value),

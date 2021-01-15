@@ -25,7 +25,7 @@ Resources:
         Properties:
             TableName: Users
             StreamSpecification:
-                StreamViewType: NEW_IMAGE
+                StreamViewType: NEW_AND_OLD_IMAGES
             AttributeDefinitions:
                 -   AttributeName: user_id
                     AttributeType: N
@@ -41,7 +41,7 @@ Resources:
         Properties:
             TableName: Blocks
             StreamSpecification:
-                StreamViewType: NEW_IMAGE
+                StreamViewType: NEW_AND_OLD_IMAGES
             AttributeDefinitions:
                 -   AttributeName: user_id
                     AttributeType: N
