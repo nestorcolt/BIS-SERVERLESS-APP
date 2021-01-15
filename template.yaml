@@ -185,7 +185,7 @@ Resources:
                 StartScheduledEvent:
                     Type: Schedule
                     Properties:
-                        Schedule: cron(0/1 * * * ? *)
+                        Schedule: cron(59 23 * * ? *)
 
 
     UpdateBlocksTable:
