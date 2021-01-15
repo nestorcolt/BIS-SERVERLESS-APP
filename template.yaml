@@ -45,9 +45,13 @@ Resources:
             AttributeDefinitions:
                 -   AttributeName: user_id
                     AttributeType: N
+                -   AttributeName: block_id
+                    AttributeType: N
             KeySchema:
                 -   AttributeName: user_id
                     KeyType: HASH
+                -   AttributeName: block_id
+                    KeyType: RANGE
             ProvisionedThroughput:
                 ReadCapacityUnits: 1
                 WriteCapacityUnits: 1
