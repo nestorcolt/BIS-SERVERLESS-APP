@@ -154,6 +154,7 @@ Resources:
             Policies:
                 - AmazonDynamoDBFullAccess
                 - AmazonSNSFullAccess
+                - AmazonEC2FullAccess
             Events:
                 StartScheduledEvent:
                     Type: Schedule
