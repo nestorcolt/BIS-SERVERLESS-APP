@@ -160,3 +160,48 @@ Resources:
                     Type: Schedule
                     Properties:
                         Schedule: cron(0/1 * * * ? *)
+
+
+    CleanBlocksTable:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 2048
+            Timeout: 360
+            FunctionName: CleanBlocksTable
+            Description: Check dynamo db every day at mid night to delete blocks captured 48 hours ago
+            CodeUri: serverless/cronoLambdas/
+            Handler: cleanBlocksTable.lambda_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                - AmazonDynamoDBFullAccess
+            Events:
+                StartScheduledEvent:
+                    Type: Schedule
+                    Properties:
+                        Schedule: cron(0/1 * * * ? *)
+
+
+    UpdateBlocksTable:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 1024
+            Timeout: 20
+            FunctionName: UpdateBlocksTable
+            Description: Handles the update of blocks table with the blocks info
+            CodeUri: serverless/capturedBlocks/
+            Handler: updateBlocksTable.function_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                - AmazonSNSFullAccess
+                - AmazonDynamoDBFullAccess
+            Events:
+                SNSEvent:
+                    Type: SNS
+                    Properties:
+                        Topic: arn:aws:sns:us-east-1:320132171574:SE-ACCEPTED-BLOCK-SERVICE
