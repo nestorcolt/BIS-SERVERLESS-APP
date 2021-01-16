@@ -20,7 +20,7 @@ Resources:
                 StreamViewType: NEW_AND_OLD_IMAGES
             AttributeDefinitions:
                 -   AttributeName: user_id
-                    AttributeType: N
+                    AttributeType: S
             KeySchema:
                 -   AttributeName: user_id
                     KeyType: HASH
@@ -36,7 +36,7 @@ Resources:
                 StreamViewType: NEW_AND_OLD_IMAGES
             AttributeDefinitions:
                 -   AttributeName: user_id
-                    AttributeType: N
+                    AttributeType: S
                 -   AttributeName: block_id
                     AttributeType: N
             KeySchema:
