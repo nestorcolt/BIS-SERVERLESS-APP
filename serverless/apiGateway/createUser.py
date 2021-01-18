@@ -20,42 +20,4 @@ def function_handler(event, context):
 
     return {"success": True, "message": "Entry created", "data": new_headers}
 
-
 ##############################################################################################
-s = {
-    "user_id": "2",
-    "refresh_token": "",
-    "areas": [],
-    "search_blocks": 1,
-    "last_active": 0,
-    "speed": 1,
-    "minimum_price": 20.00,
-    "search_schedule": [
-        {
-            "dayOfWeek": 0,
-            "enable": 1,
-            "times": [
-                {
-                    "blockTime": 1,
-                    "start": "08:00",
-                    "end": "10:00"
-                },
-                {
-                    "blockTime": 1,
-                    "start": "08:00",
-                    "end": "10:00"
-                },
-                {
-                    "blockTime": 2,
-                    "start": "08:00",
-                    "end": "10:00"
-                },
-                {
-                    "blockTime": 2,
-                    "start": "08:00",
-                    "end": "10:00"
-                }
-            ]
-        }
-    ]
-}

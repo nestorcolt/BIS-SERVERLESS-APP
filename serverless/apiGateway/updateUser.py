@@ -22,6 +22,6 @@ def function_handler(event, context):
         log.error(e)
         return {"success": False, "message": e, "data": {}}
 
-    return {"success": True, "message": "Entry created", "data": new_headers}
+    return {"success": True, "message": "Entry modified", "data": new_headers}
 
 ##############################################################################################
