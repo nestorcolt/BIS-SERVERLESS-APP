@@ -6,7 +6,7 @@ import json
 
 ##############################################################################################
 
-def lambda_handler(event, context):
+def function_handler(event, context):
         pass
 
         # item = {
