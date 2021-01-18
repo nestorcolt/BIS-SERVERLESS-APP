@@ -7,15 +7,13 @@ import json
 ##############################################################################################
 
 def function_handler(event, context):
-    params = event["queryStringParameters"]
-    print(params)
 
-    # dynamo_manager.create_item("Users", dictionary_item=item)
+    # dynamo_manager.create_item("Users", dictionary_item=event)
 
     return {
         "Success": True,
         "message": [],
-        "data": {}
+        "data": event
     }
 
 ##############################################################################################
