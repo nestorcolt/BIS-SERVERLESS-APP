@@ -8,7 +8,7 @@ import json
 
 def function_handler(event, context):
         return {
-                "Success": True,
+                "success": True,
                 "message": [],
                 "data": event
         }

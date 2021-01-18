@@ -11,7 +11,7 @@ def function_handler(event, context):
     # dynamo_manager.create_item("Users", dictionary_item=event)
 
     return {
-        "Success": True,
+        "success": True,
         "message": [],
         "data": event
     }

@@ -229,7 +229,7 @@ Resources:
             FunctionName: ApiDeleteUser
             Description: Handles deletion of a user in dynamo db Users table
             CodeUri: serverless/apiGateway/
-            Handler: deleteUsers.function_handler
+            Handler: deleteUser.function_handler
             Runtime: python3.6
             Layers:
                 - !Ref CustomAppLayers
