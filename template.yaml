@@ -201,3 +201,75 @@ Resources:
                     Type: SNS
                     Properties:
                         Topic: arn:aws:sns:us-east-1:320132171574:SE-ACCEPTED-BLOCK-SERVICE
+
+
+    ApiCreateUser:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 1024
+            Timeout: 20
+            FunctionName: ApiCreateUser
+            Description: Handles creation of a user in dynamo db Users table
+            CodeUri: serverless/apiGateway/
+            Handler: createUser.function_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                - AmazonDynamoDBFullAccess
+                - AmazonAPIGatewayInvokeFullAccess
+
+
+    ApiDeleteUser:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 1024
+            Timeout: 20
+            FunctionName: ApiDeleteUser
+            Description: Handles deletion of a user in dynamo db Users table
+            CodeUri: serverless/apiGateway/
+            Handler: deleteUsers.function_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                - AmazonDynamoDBFullAccess
+                - AmazonAPIGatewayInvokeFullAccess
+
+
+    ApiUpdateUser:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 1024
+            Timeout: 20
+            FunctionName: ApiUpdateUser
+            Description: Handles update of a user in dynamo db Users table
+            CodeUri: serverless/apiGateway/
+            Handler: updateUser.function_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                - AmazonDynamoDBFullAccess
+                - AmazonAPIGatewayInvokeFullAccess
+
+
+    ApiReadUserBlocks:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 1024
+            Timeout: 20
+            FunctionName: ApiReadUserBlocks
+            Description: Handles the reading of the user's blocks on the Blocks table
+            CodeUri: serverless/apiGateway/
+            Handler: readUserBlocks.function_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                - AmazonDynamoDBFullAccess
+                - AmazonAPIGatewayInvokeFullAccess
