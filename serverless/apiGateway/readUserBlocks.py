@@ -10,13 +10,18 @@ log = LOGGER.logger
 ##############################################################################################
 
 def function_handler(event, context):
-    user_id = json.loads(event["body"]).get(constants.TABLE_PK)
     blocks_response = []
     status_code = 200
+    user_id = None
     blocks = []
 
+    body = event["body"]
+
+    if body is not None:
+        user_id = json.loads(body).get(constants.TABLE_PK)
+
     try:
-        blocks = controller.get_user_blocks(user_id)
+        blocks = controller.get_blocks(user_id)
     except Exception as e:
         log.error(e)
         status_code = 410
