@@ -11,16 +11,6 @@ Parameters:
         Default: arn:aws:lambda:us-east-1:320132171574:layer:PythonPackagesLayer:6
 
 Resources:
-    BisApiGateway:
-        Type: AWS::Serverless::RestApi
-        Properties:
-            Name: BisApiGateway
-            Description: Endpoints for Block in service
-            StageName: production
-            Parameters:
-                endpointConfigurationTypes: REGIONAL
-
-
     # dynamo db table USERS creation
     DynamoDBTable:
         Type: AWS::DynamoDB::Table
@@ -243,12 +233,11 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - AmazonAPIGatewayInvokeFullAccess
             Events:
-                HttpPost:
+                Endpoints:
                     Type: Api
                     Properties:
-                        RestApiId: !Ref BisApiGateway
                         Path: /users
-                        Method: POST
+                        Method: post
 
     ApiDeleteUser:
         Type: AWS::Serverless::Function
@@ -266,7 +255,12 @@ Resources:
             Policies:
                 - AmazonDynamoDBFullAccess
                 - AmazonAPIGatewayInvokeFullAccess
-
+            Events:
+                Endpoints:
+                    Type: Api
+                    Properties:
+                        Path: /users
+                        Method: delete
 
     ApiUpdateUser:
         Type: AWS::Serverless::Function
@@ -284,7 +278,12 @@ Resources:
             Policies:
                 - AmazonDynamoDBFullAccess
                 - AmazonAPIGatewayInvokeFullAccess
-
+            Events:
+                Endpoints:
+                    Type: Api
+                    Properties:
+                        Path: /users
+                        Method: put
 
     ApiReadUserBlocks:
         Type: AWS::Serverless::Function
@@ -302,17 +301,9 @@ Resources:
             Policies:
                 - AmazonDynamoDBFullAccess
                 - AmazonAPIGatewayInvokeFullAccess
-
-Outputs:
-    BisApiGateway:
-        Description: 'API Gateway endpoint URL for production stage for block in service'
-        Value: !Sub 'https://${BisApiGateway}.execute-api.${AWS::Region}.amazonaws.com/production/users/'
-    BisApiGatewayRestApiId:
-        Description: 'API Gateway ARN for Basic AWS API Gateway'
-        Value: !Ref BisApiGateway
-        Export:
-            Name: BisApiGateway-RestApiId
-    BisApiGatewayRootResourceId:
-        Value: !GetAtt BisApiGateway.RootResourceId
-        Export:
-            Name: BisApiGateway-RootResourceId
+            Events:
+                Endpoints:
+                    Type: Api
+                    Properties:
+                        Path: /blocks
+                        Method: post
