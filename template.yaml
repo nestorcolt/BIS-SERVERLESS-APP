@@ -39,6 +39,10 @@ Resources:
                     AttributeType: S
                 -   AttributeName: block_id
                     AttributeType: N
+                -   AttributeName: block_time
+                    AttributeType: N
+                -   AttributeName: station_id
+                    AttributeType: S
             KeySchema:
                 -   AttributeName: user_id
                     KeyType: HASH
@@ -47,6 +51,20 @@ Resources:
             ProvisionedThroughput:
                 ReadCapacityUnits: 1
                 WriteCapacityUnits: 1
+
+            GlobalSecondaryIndexes:
+                -   IndexName: Blocks_GSI1
+                    KeySchema:
+                        -   AttributeName: station_id
+                            KeyType: HASH
+                        -   AttributeName: block_id
+                            KeyType: RANGE
+                    Projection:
+                        NonKeyAttributes: [ block_time ]
+                        ProjectionType: INCLUDE
+                    ProvisionedThroughput:
+                        ReadCapacityUnits: 1
+                        WriteCapacityUnits: 1
 
     # Lambda layers
     CustomAppLayers:
