@@ -1,4 +1,4 @@
-from Cloud.packages.dynamo import dynamo_manager, controller
+from Cloud.packages.dynamo import controller
 from Cloud.packages.constants import constants
 from Cloud.packages import logger
 import json
