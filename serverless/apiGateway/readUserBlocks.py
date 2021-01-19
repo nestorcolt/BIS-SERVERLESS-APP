@@ -10,27 +10,25 @@ log = LOGGER.logger
 ##############################################################################################
 
 def function_handler(event, context):
-    new_headers = controller.map_request_body({}, json.loads(event["body"]))
-    user_id = new_headers.pop(constants.TABLE_PK)
-
+    user_id = json.loads(event["body"]).get(constants.TABLE_PK)
+    blocks_response = []
     status_code = 200
-    message = "Entry on Users table modified successfully"
+    blocks = []
 
     try:
-        pass
-        # dynamo_manager.update_item(constants.USERS_TABLE_NAME,
-        #                            constants.TABLE_PK,
-        #                            user_id,
-        #                            new_headers)
+        blocks = controller.get_user_blocks(user_id)
     except Exception as e:
         log.error(e)
-        message = e
         status_code = 410
+
+    if blocks:
+        # cast any Decimal value to float because Decimal is not json serializable
+        blocks_response = list(map(lambda block: controller.map_response_body({}, block), blocks))
 
     return {
         "statusCode": status_code,
         "body": json.dumps({
-            "message": message,
+            "message": blocks_response,
         }),
     }
 
