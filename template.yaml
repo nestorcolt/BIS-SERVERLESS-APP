@@ -11,6 +11,16 @@ Parameters:
         Default: arn:aws:lambda:us-east-1:320132171574:layer:PythonPackagesLayer:6
 
 Resources:
+    BisApiGateway:
+        Type: AWS::Serverless::RestApi
+        Properties:
+            Name: BisApiGateway
+            Description: Endpoints for Block in service
+            StageName: production
+            Parameters:
+                endpointConfigurationTypes: REGIONAL
+
+
     # dynamo db table USERS creation
     DynamoDBTable:
         Type: AWS::DynamoDB::Table
@@ -39,8 +49,6 @@ Resources:
                     AttributeType: S
                 -   AttributeName: block_id
                     AttributeType: N
-                -   AttributeName: block_time
-                    AttributeType: N
                 -   AttributeName: station_id
                     AttributeType: S
             KeySchema:
@@ -57,11 +65,8 @@ Resources:
                     KeySchema:
                         -   AttributeName: station_id
                             KeyType: HASH
-                        -   AttributeName: block_id
-                            KeyType: RANGE
                     Projection:
-                        NonKeyAttributes: [ block_time ]
-                        ProjectionType: INCLUDE
+                        ProjectionType: ALL
                     ProvisionedThroughput:
                         ReadCapacityUnits: 1
                         WriteCapacityUnits: 1
@@ -220,7 +225,7 @@ Resources:
                     Properties:
                         Topic: arn:aws:sns:us-east-1:320132171574:SE-ACCEPTED-BLOCK-SERVICE
 
-
+    # api gateway lambdas ----------------------------------------------------------------------------------------
     ApiCreateUser:
         Type: AWS::Serverless::Function
         Properties:
@@ -237,7 +242,13 @@ Resources:
             Policies:
                 - AmazonDynamoDBFullAccess
                 - AmazonAPIGatewayInvokeFullAccess
-
+            Events:
+                HttpPost:
+                    Type: Api
+                    Properties:
+                        RestApiId: !Ref BisApiGateway
+                        Path: /users
+                        Method: POST
 
     ApiDeleteUser:
         Type: AWS::Serverless::Function
@@ -291,3 +302,17 @@ Resources:
             Policies:
                 - AmazonDynamoDBFullAccess
                 - AmazonAPIGatewayInvokeFullAccess
+
+Outputs:
+    BisApiGateway:
+        Description: 'API Gateway endpoint URL for production stage for block in service'
+        Value: !Sub 'https://${BisApiGateway}.execute-api.${AWS::Region}.amazonaws.com/production/users/'
+    BisApiGatewayRestApiId:
+        Description: 'API Gateway ARN for Basic AWS API Gateway'
+        Value: !Ref BisApiGateway
+        Export:
+            Name: BisApiGateway-RestApiId
+    BisApiGatewayRootResourceId:
+        Value: !GetAtt BisApiGateway.RootResourceId
+        Export:
+            Name: BisApiGateway-RootResourceId
