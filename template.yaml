@@ -215,6 +215,28 @@ Resources:
                     Properties:
                         Topic: arn:aws:sns:us-east-1:320132171574:SE-ACCEPTED-BLOCK-SERVICE
 
+    NotifyBlockToWeb:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 1024
+            Timeout: 20
+            FunctionName: NotifyBlockToWeb
+            Description: Send a post request to a web endpoint with the block info
+            CodeUri: serverless/apiGateway/
+            Handler: notifyWeb.lambda_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                - AmazonSNSFullAccess
+                - AmazonDynamoDBFullAccess
+            Events:
+                SNSEvent:
+                    Type: SNS
+                    Properties:
+                        Topic: arn:aws:sns:us-east-1:320132171574:SE-ACCEPTED-BLOCK-SERVICE
+
     # api gateway lambdas ----------------------------------------------------------------------------------------
     ApiCreateUser:
         Type: AWS::Serverless::Function
