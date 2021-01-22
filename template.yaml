@@ -147,6 +147,29 @@ Resources:
                     Properties:
                         Topic: arn:aws:sns:us-east-1:320132171574:SE-STOP-SERVICE
 
+
+    SleepSearchEngineInstance:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 1024
+            Timeout: 20
+            FunctionName: SleepSearchEngineInstance
+            Description: Handles the put to sleep of a search engine Ec2 instance for 30 minutes
+            CodeUri: serverless/serverManager/
+            Handler: sleep.function_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                - AmazonSNSFullAccess
+                - AmazonEC2FullAccess
+            Events:
+                SNSEvent:
+                    Type: SNS
+                    Properties:
+                        Topic: arn:aws:sns:us-east-1:320132171574:SE-SLEEP-INSTANCE-SERVICE
+
     CronoLambda1Minute:
         Type: AWS::Serverless::Function
         Properties:
