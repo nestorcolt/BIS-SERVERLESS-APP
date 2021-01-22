@@ -164,6 +164,8 @@ Resources:
             Policies:
                 - AmazonSNSFullAccess
                 - AmazonEC2FullAccess
+                - AmazonDynamoDBFullAccess
+                - AWSLambdaDynamoDBExecutionRole
             Events:
                 SNSEvent:
                     Type: SNS
