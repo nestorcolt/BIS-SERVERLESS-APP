@@ -22,7 +22,7 @@ def function_handler(event, context):
             ec2_manager.delete_instance_handle(instance_name)
 
             # update dynamo DB
-            controller.set_last_active_user_time(user_id)
+            controller.set_last_active_user_time(str(user_id))
 
     except Exception as e:
         # Send some context about this error to Lambda Logs
