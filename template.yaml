@@ -172,6 +172,28 @@ Resources:
                     Properties:
                         Topic: arn:aws:sns:us-east-1:320132171574:SE-SLEEP-INSTANCE-SERVICE
 
+    SearchEngineCloudLogs:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 256
+            Timeout: 5
+            FunctionName: SearchEngineCloudLogs
+            Description:
+            CodeUri: serverless/logging/
+            Handler: engineLogger.lambda_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                - AmazonSNSFullAccess
+                - CloudWatchLogsFullAccess
+            Events:
+                SNSEvent:
+                    Type: SNS
+                    Properties:
+                        Topic: arn:aws:sns:us-east-1:320132171574:SE-LOGS-SERVICE
+
     CronoLambda1Minute:
         Type: AWS::Serverless::Function
         Properties:
