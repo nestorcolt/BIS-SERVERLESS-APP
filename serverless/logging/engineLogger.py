@@ -22,10 +22,11 @@ def lambda_handler(event, context):
     if sns_message:
         user = sns_message["user_id"]
         data = sns_message["data"]
+        stream_name = f"User-{user}"
 
         # LOG TO CLOUDWATCH
         logs_manager.create_or_update_log(log_group=constants.SEARCH_ENGINE_LOG_GROUP,
-                                          log_stream=user,
+                                          log_stream=stream_name,
                                           message=data)
 
         log.info(f"logging info for user: {user}")
