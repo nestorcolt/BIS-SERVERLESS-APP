@@ -21,16 +21,13 @@ def sleep_status_check_handler(event, context):
 
     for user in last_active["Items"]:
         search_blocks = user.get("search_blocks", False)
-        user_id = str(user["user_id"])
 
-        # Get the running instance with the user id if exists
-        instance_name = f'User-{user_id}'
-        instance = ec2_manager.get_instance_by_tag(value=instance_name)  # None = Instance doesn't not exist
-
-        if search_blocks and instance is None:
-            topic_arn = sns_manager.get_topic_by_name(constants.START_SE_SNS_NAME)[0]["TopicArn"]
-            sns_manager.sns_publish_to_topic(topic_arn=topic_arn,
-                                             message=json.dumps(user_id),
-                                             subject="SleepCheckEvent")
+        if search_blocks:
+            #  TODO  create topic for set user active for search
+            pass
+            # topic_arn = sns_manager.get_topic_by_name(constants.START_SE_SNS_NAME)[0]["TopicArn"]
+            # sns_manager.sns_publish_to_topic(topic_arn=topic_arn,
+            #                                  message=json.dumps(user_id),
+            #                                  subject="SleepCheckEvent")
 
 ##############################################################################################

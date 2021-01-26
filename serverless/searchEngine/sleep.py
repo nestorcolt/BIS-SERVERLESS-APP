@@ -1,5 +1,4 @@
 from Cloud.packages.dynamo import controller
-from Cloud.packages.Ec2 import ec2_manager
 from Cloud.packages import logger
 import json
 
@@ -16,11 +15,6 @@ def function_handler(event, context):
 
     try:
         if user_id:
-            instance_name = f"User-{user_id}"
-
-            # Ec2 instance delete
-            ec2_manager.delete_instance_handle(instance_name)
-
             # update dynamo DB
             controller.set_last_active_user_time(str(user_id))
 

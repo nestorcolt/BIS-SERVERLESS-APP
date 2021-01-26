@@ -1,17 +1,14 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: SAM Template for BIS-Cloud
-Globals:
-    Function:
-        Timeout: 900
 
 Parameters:
     PackagesLayerArn:
         Type: String
-        Default: arn:aws:lambda:us-east-1:320132171574:layer:PythonPackagesLayer:6
+        Default: arn:aws:lambda:us-east-1:436783151981:layer:PythonPackagesLayer:1
 
 Resources:
-    # dynamo db table USERS creation
+    # dynamo db  ----------------------------------------------------------------------------------------
     DynamoDBTable:
         Type: AWS::DynamoDB::Table
         Properties:
@@ -61,7 +58,7 @@ Resources:
                         ReadCapacityUnits: 1
                         WriteCapacityUnits: 1
 
-    # Lambda layers
+    # Lambda layers ----------------------------------------------------------------------------------------
     CustomAppLayers:
         Type: AWS::Serverless::LayerVersion
         Properties:
@@ -76,78 +73,6 @@ Resources:
             BuildMethod: python3.6
 
     # Lambdas section ---------------------------------------------------------------------------------------
-    UsersDynamoStreamHandle:
-        Type: AWS::Serverless::Function
-        Properties:
-            MemorySize: 2048
-            Timeout: 20
-            FunctionName: UsersDynamoStreamHandle
-            Description: Handles dynamodb streams from users table
-            CodeUri: serverless/dynamoStream/
-            Handler: dynamoStreamHandler.lambda_handler
-            Runtime: python3.6
-            Layers:
-                - !Ref CustomAppLayers
-                - !Ref PackagesLayerArn
-            Policies:
-                # Give DynamoDB Full Access to your Lambda Function
-                - AmazonDynamoDBFullAccess
-                - AmazonSNSFullAccess
-                - AWSLambdaDynamoDBExecutionRole
-            Events:
-                Stream:
-                    Type: DynamoDB
-                    Properties:
-                        Stream: !GetAtt DynamoDBTable.StreamArn
-                        BatchSize: 100
-                        StartingPosition: TRIM_HORIZON
-
-    StartSearchEngineInstance:
-        Type: AWS::Serverless::Function
-        Properties:
-            MemorySize: 1024
-            Timeout: 20
-            FunctionName: StartSearchEngineInstance
-            Description: Handles the start of a search engine Ec2 instance
-            CodeUri: serverless/serverManager/
-            Handler: managerHandler.start_handler
-            Runtime: python3.6
-            Layers:
-                - !Ref CustomAppLayers
-                - !Ref PackagesLayerArn
-            Policies:
-                - AmazonSNSFullAccess
-                - AmazonEC2FullAccess
-                - IAMFullAccess
-            Events:
-                SNSEvent:
-                    Type: SNS
-                    Properties:
-                        Topic: arn:aws:sns:us-east-1:320132171574:SE-START-SERVICE
-
-    TerminateSearchEngineInstance:
-        Type: AWS::Serverless::Function
-        Properties:
-            MemorySize: 1024
-            Timeout: 20
-            FunctionName: TerminateSearchEngineInstance
-            Description: Handles the termination of a search engine Ec2 instance
-            CodeUri: serverless/serverManager/
-            Handler: managerHandler.terminate_handler
-            Runtime: python3.6
-            Layers:
-                - !Ref CustomAppLayers
-                - !Ref PackagesLayerArn
-            Policies:
-                - AmazonSNSFullAccess
-                - AmazonEC2FullAccess
-            Events:
-                SNSEvent:
-                    Type: SNS
-                    Properties:
-                        Topic: arn:aws:sns:us-east-1:320132171574:SE-STOP-SERVICE
-
-
     SleepSearchEngineInstance:
         Type: AWS::Serverless::Function
         Properties:
@@ -155,7 +80,7 @@ Resources:
             Timeout: 20
             FunctionName: SleepSearchEngineInstance
             Description: Handles the put to sleep of a search engine Ec2 instance for 30 minutes
-            CodeUri: serverless/serverManager/
+            CodeUri: serverless/searchEngine/
             Handler: sleep.function_handler
             Runtime: python3.6
             Layers:
@@ -217,7 +142,6 @@ Resources:
                     Properties:
                         Schedule: cron(0/1 * * * ? *)
 
-
     CleanBlocksTable:
         Type: AWS::Serverless::Function
         Properties:
@@ -238,7 +162,6 @@ Resources:
                     Type: Schedule
                     Properties:
                         Schedule: cron(59 23 * * ? *)
-
 
     UpdateBlocksTable:
         Type: AWS::Serverless::Function
