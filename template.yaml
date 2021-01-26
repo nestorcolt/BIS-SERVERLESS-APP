@@ -134,7 +134,6 @@ Resources:
                 - !Ref PackagesLayerArn
             Policies:
                 - AmazonSNSFullAccess
-                - AmazonEC2FullAccess
                 - AmazonDynamoDBFullAccess
                 - AWSLambdaDynamoDBExecutionRole
             Events:
@@ -165,15 +164,15 @@ Resources:
                     Properties:
                         Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-LOGS-SERVICE'
 
-    CronoLambda1Minute:
+    FlexListActiveUsers:
         Type: AWS::Serverless::Function
         Properties:
             MemorySize: 2048
             Timeout: 60
-            FunctionName: CronoLambda1Minute
-            Description: Check dynamo db every minute to wake up every asleep ec2 instance
-            CodeUri: serverless/cronoLambdas/
-            Handler: sleepStatusCheck.sleep_status_check_handler
+            FunctionName: FlexListActiveUsers
+            Description: Check dynamo db and get the latest active users (after 30 mins sleep) search=True
+            CodeUri: serverless/searchEngine/
+            Handler: flexListActiveUsers.function_handler
             Runtime: python3.6
             Layers:
                 - !Ref CustomAppLayers
@@ -181,12 +180,6 @@ Resources:
             Policies:
                 - AmazonDynamoDBFullAccess
                 - AmazonSNSFullAccess
-                - AmazonEC2FullAccess
-            Events:
-                StartScheduledEvent:
-                    Type: Schedule
-                    Properties:
-                        Schedule: cron(0/1 * * * ? *)
 
     CleanBlocksTable:
         Type: AWS::Serverless::Function
