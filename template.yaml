@@ -118,6 +118,9 @@ Resources:
             Layers:
                 - !Ref CustomAppLayers
                 - !Ref PackagesLayerArn
+            Policies:
+                - AWSLambdaFullAccess
+                - AWSStepFunctionsFullAccess
 
     SleepSearchEngineInstance:
         Type: AWS::Serverless::Function
@@ -167,8 +170,8 @@ Resources:
     FlexListActiveUsers:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 2048
-            Timeout: 60
+            MemorySize: 10240
+            Timeout: 301
             FunctionName: FlexListActiveUsers
             Description: Check dynamo db and get the latest active users (after 30 mins sleep) search=True
             CodeUri: serverless/searchEngine/
@@ -184,8 +187,8 @@ Resources:
     CleanBlocksTable:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 2048
-            Timeout: 360
+            MemorySize: 10240
+            Timeout: 361
             FunctionName: CleanBlocksTable
             Description: Check dynamo db every day at mid night to delete blocks captured 48 hours ago
             CodeUri: serverless/cronoLambdas/

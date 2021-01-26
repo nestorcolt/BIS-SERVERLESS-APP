@@ -18,13 +18,13 @@ def function_handler(event, context):
     last_active = controller.get_last_active_users()
 
     for user_data in last_active["Items"]:
-        log.debug(user_data)
         search_blocks = user_data.get("search_blocks", False)
 
         if search_blocks:
+            log.debug(user_data)
             topic_arn = sns_manager.get_topic_by_name(constants.START_SE_SNS_NAME)[0]["TopicArn"]
-            sns_manager.sns_publish_to_topic(topic_arn=topic_arn,
-                                             message=user_data,
-                                             subject="User filters for search engine")
+            # sns_manager.sns_publish_to_topic(topic_arn=topic_arn,
+            #                                  message=user_data,
+            #                                  subject="User filters for search engine")
 
 ##############################################################################################

@@ -8,7 +8,7 @@ client = boto3.client('lambda')
 
 
 ##############################################################################################
-def lambda_handler(event, context):
+def function_handler(event, context):
     index = event['iterator']['index'] + 1
     logger.info('Invoke flex active users function:	FlexListActiveUsers')
 
