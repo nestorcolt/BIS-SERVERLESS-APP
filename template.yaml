@@ -12,6 +12,33 @@ Parameters:
         Default: 436783151981
 
 Resources:
+    SAMLogs:
+        Type: AWS::Logs::LogGroup
+
+    # state machine  ----------------------------------------------------------------------------------------
+    ValidationStateMachine:
+        Type: AWS::Serverless::StateMachine
+        Properties:
+            Type: EXPRESS
+            DefinitionUri: statemachine/validator.asl.json
+            DefinitionSubstitutions:
+                FlexSmIteratorFunctionArn: !GetAtt FlexSmIterator.Arn
+            Events:
+                StartScheduledEvent:
+                    Type: Schedule
+                    Properties:
+                        Schedule: cron(0/1 * * * ? *)
+            Logging:
+                Destinations:
+                    -   CloudWatchLogsLogGroup:
+                            LogGroupArn: !GetAtt SAMLogs.Arn
+                IncludeExecutionData: true
+                Level: ALL
+            Policies:
+                -   LambdaInvokePolicy:
+                        FunctionName: !Ref FlexSmIterator
+                - CloudWatchLogsFullAccess
+
     # dynamo db  ----------------------------------------------------------------------------------------
     DynamoDBTable:
         Type: AWS::DynamoDB::Table
@@ -77,6 +104,20 @@ Resources:
             BuildMethod: python3.6
 
     # Lambdas section ---------------------------------------------------------------------------------------
+    FlexSmIterator:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 512
+            Timeout: 20
+            FunctionName: FlexSmIterator
+            Description: allow to iterate every second base on the state machine trigger
+            CodeUri: serverless/searchEngine/
+            Handler: flexSmIterator.function_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+
     SleepSearchEngineInstance:
         Type: AWS::Serverless::Function
         Properties:

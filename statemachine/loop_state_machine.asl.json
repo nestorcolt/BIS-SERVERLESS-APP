@@ -1,0 +1,41 @@
+{
+    "Comment": "Invoke Lambda every 1 seconds",
+    "StartAt": "ConfigureCount",
+    "States": {
+        "ConfigureCount": {
+            "Type": "Pass",
+            "Result": {
+                "index": 0,
+                "count": 60
+            },
+            "ResultPath": "$.iterator",
+            "Next": "Iterator"
+        },
+        "Iterator": {
+            "Type": "Task",
+            "Resource": "${FlexSmIteratorFunctionArn}",
+            "ResultPath": "$.iterator",
+            "Next": "IsCountReached"
+        },
+        "IsCountReached": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.iterator.continue",
+                    "BooleanEquals": true,
+                    "Next": "Wait"
+                }
+            ],
+            "Default": "Done"
+        },
+        "Wait": {
+            "Type": "Wait",
+            "Seconds": 1,
+            "Next": "Iterator"
+        },
+        "Done": {
+            "Type": "Pass",
+            "End": true
+        }
+    }
+}
