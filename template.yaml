@@ -5,7 +5,11 @@ Description: SAM Template for BIS-Cloud
 Parameters:
     PackagesLayerArn:
         Type: String
-        Default: arn:aws:lambda:us-east-1:436783151981:layer:PythonPackagesLayer:1
+        Default: arn:aws:lambda:us-east-1:436783151981:layer:PythonPackagesLayer:1 # Change account it also here
+
+    AccountId:
+        Type: String
+        Default: 436783151981
 
 Resources:
     # dynamo db  ----------------------------------------------------------------------------------------
@@ -95,7 +99,7 @@ Resources:
                 SNSEvent:
                     Type: SNS
                     Properties:
-                        Topic: arn:aws:sns:us-east-1:320132171574:SE-SLEEP-INSTANCE-SERVICE
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-SLEEP-INSTANCE-SERVICE'
 
     SearchEngineCloudLogs:
         Type: AWS::Serverless::Function
@@ -117,7 +121,7 @@ Resources:
                 SNSEvent:
                     Type: SNS
                     Properties:
-                        Topic: arn:aws:sns:us-east-1:320132171574:SE-LOGS-SERVICE
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-LOGS-SERVICE'
 
     CronoLambda1Minute:
         Type: AWS::Serverless::Function
@@ -183,7 +187,7 @@ Resources:
                 SNSEvent:
                     Type: SNS
                     Properties:
-                        Topic: arn:aws:sns:us-east-1:320132171574:SE-ACCEPTED-BLOCK-SERVICE
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ACCEPTED-BLOCK-SERVICE'
 
     NotifyBlockToWeb:
         Type: AWS::Serverless::Function
@@ -205,7 +209,7 @@ Resources:
                 SNSEvent:
                     Type: SNS
                     Properties:
-                        Topic: arn:aws:sns:us-east-1:320132171574:SE-ACCEPTED-BLOCK-SERVICE
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ACCEPTED-BLOCK-SERVICE'
 
     # api gateway lambdas ----------------------------------------------------------------------------------------
     ApiCreateUser:
