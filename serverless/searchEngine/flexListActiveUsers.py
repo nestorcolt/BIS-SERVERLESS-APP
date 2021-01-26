@@ -1,11 +1,7 @@
 from Cloud.packages.constants import constants
 from Cloud.packages.dynamo import controller
 from Cloud.packages.sns import sns_manager
-from Cloud.packages import logger
 import simplejson
-
-LOGGER = logger.Logger(__name__)
-log = LOGGER.logger
 
 
 ##############################################################################################
