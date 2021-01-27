@@ -7,7 +7,6 @@ Globals:
         Runtime: python3.6
         Layers:
             - arn:aws:lambda:us-east-1:436783151981:layer:PythonPackagesLayer:3 # Change account ID also here
-            - !Ref PackagesLayerArn
 
 Parameters:
     AccountId:
@@ -117,6 +116,8 @@ Resources:
             Description: allow to iterate every second base on the state machine trigger
             CodeUri: serverless/searchEngine/
             Handler: flexSmIterator.function_handler
+            Layers:
+                - !Ref CustomAppLayers
             Policies:
                 - AWSLambdaFullAccess
                 - AWSStepFunctionsFullAccess
@@ -130,6 +131,8 @@ Resources:
             Description: Handles the put to sleep of a search engine Ec2 instance for 30 minutes
             CodeUri: serverless/searchEngine/
             Handler: sleepSearch.function_handler
+            Layers:
+                - !Ref CustomAppLayers
             Policies:
                 - AmazonSNSFullAccess
                 - AmazonDynamoDBFullAccess
@@ -149,6 +152,8 @@ Resources:
             Description:
             CodeUri: serverless/logging/
             Handler: engineLogger.lambda_handler
+            Layers:
+                - !Ref CustomAppLayers
             Policies:
                 - AmazonSNSFullAccess
                 - CloudWatchLogsFullAccess
@@ -167,6 +172,8 @@ Resources:
             Description: Check dynamo db and get the latest active users (after 30 mins sleep) search=True
             CodeUri: serverless/searchEngine/
             Handler: flexListActiveUsers.function_handler
+            Layers:
+                - !Ref CustomAppLayers
             Policies:
                 - AmazonDynamoDBFullAccess
                 - AmazonSNSFullAccess
@@ -180,6 +187,8 @@ Resources:
             Description: Check dynamo db every day at mid night to delete blocks captured 48 hours ago
             CodeUri: serverless/cronoLambdas/
             Handler: cleanBlocksTable.lambda_handler
+            Layers:
+                - !Ref CustomAppLayers
             Policies:
                 - AmazonDynamoDBFullAccess
             Events:
@@ -197,6 +206,8 @@ Resources:
             Description: Handles the update of blocks table with the blocks info
             CodeUri: serverless/searchEngine/
             Handler: updateBlocksTable.function_handler
+            Layers:
+                - !Ref CustomAppLayers
             Policies:
                 - AmazonSNSFullAccess
                 - AmazonDynamoDBFullAccess
@@ -215,6 +226,8 @@ Resources:
             Description: Send a post request to a web endpoint with the block info
             CodeUri: serverless/apiGateway/
             Handler: notifyBlockToWeb.lambda_handler
+            Layers:
+                - !Ref CustomAppLayers
             Policies:
                 - AmazonSNSFullAccess
                 - AmazonDynamoDBFullAccess
@@ -233,6 +246,8 @@ Resources:
             Description: Send a post request to a web endpoint with the error user info
             CodeUri: serverless/apiGateway/
             Handler: notifyErrorToWeb.lambda_handler
+            Layers:
+                - !Ref CustomAppLayers
             Policies:
                 - AmazonSNSFullAccess
             Events:
@@ -251,6 +266,8 @@ Resources:
             Description: Handles creation of a user in dynamo db Users table
             CodeUri: serverless/apiGateway/
             Handler: createUser.function_handler
+            Layers:
+                - !Ref CustomAppLayers
             Policies:
                 - AmazonDynamoDBFullAccess
                 - AmazonAPIGatewayInvokeFullAccess
@@ -270,6 +287,8 @@ Resources:
             Description: Handles deletion of a user in dynamo db Users table
             CodeUri: serverless/apiGateway/
             Handler: deleteUser.function_handler
+            Layers:
+                - !Ref CustomAppLayers
             Policies:
                 - AmazonDynamoDBFullAccess
                 - AmazonAPIGatewayInvokeFullAccess
@@ -289,6 +308,8 @@ Resources:
             Description: Handles update of a user in dynamo db Users table
             CodeUri: serverless/apiGateway/
             Handler: updateUser.function_handler
+            Layers:
+                - !Ref CustomAppLayers
             Policies:
                 - AmazonDynamoDBFullAccess
                 - AmazonAPIGatewayInvokeFullAccess
@@ -308,6 +329,8 @@ Resources:
             Description: Handles the reading of the user's blocks on the Blocks table
             CodeUri: serverless/apiGateway/
             Handler: readUserBlocks.function_handler
+            Layers:
+                - !Ref CustomAppLayers
             Policies:
                 - AmazonDynamoDBFullAccess
                 - AmazonAPIGatewayInvokeFullAccess
