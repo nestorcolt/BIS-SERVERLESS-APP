@@ -143,7 +143,7 @@ Resources:
                 SNSEvent:
                     Type: SNS
                     Properties:
-                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-SLEEP-INSTANCE-SERVICE'
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-SLEEP-TOPIC'
 
     SearchEngineCloudLogs:
         Type: AWS::Serverless::Function
@@ -165,7 +165,7 @@ Resources:
                 SNSEvent:
                     Type: SNS
                     Properties:
-                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-LOGS-SERVICE'
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-LOGS-TOPIC'
 
     FlexListActiveUsers:
         Type: AWS::Serverless::Function
@@ -225,7 +225,7 @@ Resources:
                 SNSEvent:
                     Type: SNS
                     Properties:
-                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ACCEPTED-BLOCK-SERVICE'
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ACCEPTED-TOPIC'
 
     NotifyBlockToWeb:
         Type: AWS::Serverless::Function
@@ -247,7 +247,7 @@ Resources:
                 SNSEvent:
                     Type: SNS
                     Properties:
-                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ACCEPTED-BLOCK-SERVICE'
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ACCEPTED-TOPIC'
 
     # api gateway lambdas ----------------------------------------------------------------------------------------
     ApiCreateUser:
