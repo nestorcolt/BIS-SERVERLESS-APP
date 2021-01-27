@@ -13,15 +13,13 @@ def lambda_handler(event, context):
     Triggered by an SNS event will put a new entry on the blocks table with the captured blocks from the user.
     This SNS event will be called inside of an Ec2 instance from the search engine
     """
-
     # Get the records list
-    records = event["Records"][0]
-    blocks = json.loads(records["Sns"]["Message"])["blocks"]
+    block = json.loads(event["Records"][0]["Sns"]["Message"])
 
-    for block in blocks:
-        user = block["user_id"]
-        data = block["data"]
-        controller.put_new_block(user, data)
-        log.info(f"New entry created for user {user} on the blocks table. Data: {data}")
+    user = block["user_id"]
+    data = block["data"]
+
+    controller.put_new_block(user, data)
+    log.info(f"New entry created for user {user} on the blocks table. Data: {data}")
 
 ##############################################################################################
