@@ -130,7 +130,7 @@ Resources:
             FunctionName: SleepSearchEngineInstance
             Description: Handles the put to sleep of a search engine Ec2 instance for 30 minutes
             CodeUri: serverless/searchEngine/
-            Handler: sleep.function_handler
+            Handler: sleepSearch.function_handler
             Runtime: python3.6
             Layers:
                 - !Ref CustomAppLayers
@@ -212,7 +212,7 @@ Resources:
             Timeout: 20
             FunctionName: UpdateBlocksTable
             Description: Handles the update of blocks table with the blocks info
-            CodeUri: serverless/capturedBlocks/
+            CodeUri: serverless/searchEngine/
             Handler: updateBlocksTable.function_handler
             Runtime: python3.6
             Layers:
