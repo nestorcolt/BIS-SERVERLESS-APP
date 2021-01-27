@@ -34,7 +34,6 @@ def function_handler(event, context):
             continue
 
         # If passed all validations let user search
-        log.info(f"User {user_data.get('user_id')} is looking for blocks ...")
         topic_arn = sns_manager.get_topic_by_name(constants.SE_START_TOPIC)[0]["TopicArn"]
         sns_manager.sns_publish_to_topic(topic_arn=topic_arn,
                                          message=simplejson.dumps(user_data, use_decimal=True),
