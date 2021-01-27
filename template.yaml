@@ -5,7 +5,7 @@ Description: SAM Template for BIS-Cloud
 Parameters:
     PackagesLayerArn:
         Type: String
-        Default: arn:aws:lambda:us-east-1:436783151981:layer:PythonPackagesLayer:3 # Change account it also here
+        Default: arn:aws:lambda:us-east-1:436783151981:layer:PythonPackagesLayer:3 # Change account ID also here
 
     AccountId:
         Type: String
@@ -122,12 +122,12 @@ Resources:
                 - AWSLambdaFullAccess
                 - AWSStepFunctionsFullAccess
 
-    SleepSearchEngineInstance:
+    SleepSearchEngine:
         Type: AWS::Serverless::Function
         Properties:
             MemorySize: 1024
             Timeout: 20
-            FunctionName: SleepSearchEngineInstance
+            FunctionName: SleepSearchEngine
             Description: Handles the put to sleep of a search engine Ec2 instance for 30 minutes
             CodeUri: serverless/searchEngine/
             Handler: sleepSearch.function_handler
@@ -235,7 +235,7 @@ Resources:
             FunctionName: NotifyBlockToWeb
             Description: Send a post request to a web endpoint with the block info
             CodeUri: serverless/apiGateway/
-            Handler: notifyWeb.lambda_handler
+            Handler: notifyBlockToWeb.lambda_handler
             Runtime: python3.6
             Layers:
                 - !Ref CustomAppLayers
@@ -248,6 +248,27 @@ Resources:
                     Type: SNS
                     Properties:
                         Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ACCEPTED-TOPIC'
+
+    NotifyErrorToWeb:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 512
+            Timeout: 20
+            FunctionName: NotifyErrorToWeb
+            Description: Send a post request to a web endpoint with the error user info
+            CodeUri: serverless/apiGateway/
+            Handler: notifyErrorToWeb.lambda_handler
+            Runtime: python3.6
+            Layers:
+                - !Ref CustomAppLayers
+                - !Ref PackagesLayerArn
+            Policies:
+                - AmazonSNSFullAccess
+            Events:
+                SNSEvent:
+                    Type: SNS
+                    Properties:
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ERROR-TOPIC'
 
     # api gateway lambdas ----------------------------------------------------------------------------------------
     ApiCreateUser:
