@@ -56,8 +56,8 @@ Resources:
                 -   AttributeName: user_id
                     KeyType: HASH
             ProvisionedThroughput:
-                ReadCapacityUnits: 1
-                WriteCapacityUnits: 1
+                ReadCapacityUnits: 5
+                WriteCapacityUnits: 5
 
     BlocksTable:
         Type: AWS::DynamoDB::Table
@@ -89,8 +89,41 @@ Resources:
                     Projection:
                         ProjectionType: ALL
                     ProvisionedThroughput:
-                        ReadCapacityUnits: 1
-                        WriteCapacityUnits: 1
+                        ReadCapacityUnits: 5
+                        WriteCapacityUnits: 5
+
+    OffersTable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+            TableName: Offers
+            StreamSpecification:
+                StreamViewType: NEW_AND_OLD_IMAGES
+            AttributeDefinitions:
+                -   AttributeName: user_id
+                    AttributeType: S
+                -   AttributeName: offer_id
+                    AttributeType: S
+                -   AttributeName: station_id
+                    AttributeType: S
+            KeySchema:
+                -   AttributeName: user_id
+                    KeyType: HASH
+                -   AttributeName: offer_id
+                    KeyType: RANGE
+            ProvisionedThroughput:
+                ReadCapacityUnits: 1
+                WriteCapacityUnits: 1
+
+            GlobalSecondaryIndexes:
+                -   IndexName: Offers_GSI1
+                    KeySchema:
+                        -   AttributeName: station_id
+                            KeyType: HASH
+                    Projection:
+                        ProjectionType: ALL
+                    ProvisionedThroughput:
+                        ReadCapacityUnits: 5
+                        WriteCapacityUnits: 5
 
     # Lambda layers ----------------------------------------------------------------------------------------
     CustomAppLayers:
@@ -216,6 +249,26 @@ Resources:
                     Type: SNS
                     Properties:
                         Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ACCEPTED-TOPIC'
+
+    UpdateOffersTable:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 512
+            Timeout: 20
+            FunctionName: UpdateOffersTable
+            Description: Handles the update of offers table with the offer info
+            CodeUri: serverless/searchEngine/
+            Handler: updateOffersTable.function_handler
+            Layers:
+                - !Ref CustomAppLayers
+            Policies:
+                - AmazonSNSFullAccess
+                - AmazonDynamoDBFullAccess
+            Events:
+                SNSEvent:
+                    Type: SNS
+                    Properties:
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-OFFERS-TOPIC'
 
     NotifyBlockToWeb:
         Type: AWS::Serverless::Function
