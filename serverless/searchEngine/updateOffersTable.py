@@ -16,10 +16,11 @@ def lambda_handler(event, context):
     # Get the records list
     offer = json.loads(event["Records"][0]["Sns"]["Message"])
 
+    validated = offer["validated"]
     user = offer["user_id"]
     data = offer["data"]
 
-    # controller.put_new_block(user, data)
-    log.info(f"New entry created for user {user} on the blocks table. Data: {data}")
+    controller.put_new_offer(user, validated, data)
+    log.info(f"New entry created for user {user} on the offers table. Data: {data}")
 
 ##############################################################################################
