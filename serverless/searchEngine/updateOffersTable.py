@@ -8,7 +8,7 @@ log = LOGGER.logger
 
 ##############################################################################################
 
-def lambda_handler(event, context):
+def function_handler(event, context):
     """
     Triggered by an SNS event will put a new entry on the offer table with data of the seen offer to later send
     this to analytics
