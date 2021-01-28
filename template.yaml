@@ -211,15 +211,15 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - AmazonSNSFullAccess
 
-    CleanBlocksTable:
+    CleanUpTables:
         Type: AWS::Serverless::Function
         Properties:
             MemorySize: 10240
             Timeout: 361
-            FunctionName: CleanBlocksTable
-            Description: Check dynamo db every day at mid night to delete blocks captured 48 hours ago
+            FunctionName: CleanUpTables
+            Description: every mid night deletes entries older than 48 hours ago in blocks and offers tables
             CodeUri: serverless/cronoLambdas/
-            Handler: cleanBlocksTable.lambda_handler
+            Handler: CleanUpTables.lambda_handler
             Layers:
                 - !Ref CustomAppLayers
             Policies:
