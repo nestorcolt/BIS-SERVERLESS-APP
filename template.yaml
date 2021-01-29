@@ -230,6 +230,27 @@ Resources:
                     Properties:
                         Schedule: cron(59 23 * * ? *)
 
+    LogAllUsers:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 10240
+            Timeout: 900
+            FunctionName: LogAllUsers
+            Description: every minute log all active users stats to cloudwatch
+            CodeUri: serverless/cronoLambdas/
+            Handler: logUserStats.lambda_handler
+            Layers:
+                - !Ref CustomAppLayers
+            Policies:
+                - AmazonDynamoDBFullAccess
+                - CloudWatchLogsFullAccess
+                - AmazonSNSFullAccess
+            Events:
+                StartScheduledEvent:
+                    Type: Schedule
+                    Properties:
+                        Schedule: cron(0/1 * * * ? *)
+
     UpdateBlocksTable:
         Type: AWS::Serverless::Function
         Properties:
