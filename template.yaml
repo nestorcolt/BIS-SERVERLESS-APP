@@ -214,7 +214,7 @@ Resources:
     CleanUpTables:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 10240
+            MemorySize: 2048
             Timeout: 361
             FunctionName: CleanUpTables
             Description: every mid night deletes entries older than 48 hours ago in blocks and offers tables
@@ -233,7 +233,7 @@ Resources:
     LogAllUsers:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 10240
+            MemorySize: 2048
             Timeout: 900
             FunctionName: LogAllUsers
             Description: every minute log all active users stats to cloudwatch
