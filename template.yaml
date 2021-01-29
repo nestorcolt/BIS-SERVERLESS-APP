@@ -237,7 +237,7 @@ Resources:
             Timeout: 900
             FunctionName: LogAllUsers
             Description: every minute log all active users stats to cloudwatch
-            CodeUri: serverless/cronoLambdas/
+            CodeUri: serverless/logging/
             Handler: logUserStats.lambda_handler
             Layers:
                 - !Ref CustomAppLayers
