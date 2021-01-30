@@ -241,7 +241,7 @@ $RECYCLE.BIN/
 
 */build/*
 
-
+sandbox/
 .idea/
 .aws-sam/
 

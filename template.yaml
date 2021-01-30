@@ -139,6 +139,37 @@ Resources:
         Metadata:
             BuildMethod: python3.6
 
+    # SQS section ---------------------------------------------------------------------------------------
+    SeAuthenticationQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+            QueueName: SeAuthenticationQueue
+            MessageRetentionPeriod: 60
+            RedrivePolicy:
+                deadLetterTargetArn:
+                    Fn::GetAtt:
+                        - "SeGhostQueue"
+                        - "Arn"
+                maxReceiveCount: 1
+
+    SeErrorQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+            QueueName: SeErrorQueue
+            MessageRetentionPeriod: 60
+            RedrivePolicy:
+                deadLetterTargetArn:
+                    Fn::GetAtt:
+                        - "SeGhostQueue"
+                        - "Arn"
+                maxReceiveCount: 1
+
+    SeGhostQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+            QueueName: SeGhostQueue
+            MessageRetentionPeriod: 60
+
     # Lambdas section ---------------------------------------------------------------------------------------
     FlexSmIterator:
         Type: AWS::Serverless::Function
@@ -193,10 +224,10 @@ Resources:
                 - AWSLambdaDynamoDBExecutionRole
                 - CloudWatchLogsFullAccess
             Events:
-                SNSEvent:
-                    Type: SNS
+                SQSEvent:
+                    Type: SQS
                     Properties:
-                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ERROR-TOPIC'
+                        Queue: !GetAtt SeErrorQueue.Arn
 
     SearchEngineCloudLogs:
         Type: AWS::Serverless::Function
@@ -347,10 +378,10 @@ Resources:
             Policies:
                 - AmazonSNSFullAccess
             Events:
-                SNSEvent:
-                    Type: SNS
+                SQSEvent:
+                    Type: SQS
                     Properties:
-                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ERROR-TOPIC'
+                        Queue: !GetAtt SeErrorQueue.Arn
 
     # api gateway lambdas ----------------------------------------------------------------------------------------
     ApiCreateUser:
