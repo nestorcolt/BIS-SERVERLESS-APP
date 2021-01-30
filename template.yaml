@@ -164,11 +164,56 @@ Resources:
                         - "Arn"
                 maxReceiveCount: 1
 
+    SeOnProcessQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+            QueueName: SeOnProcessQueue
+            MessageRetentionPeriod: 60
+            RedrivePolicy:
+                deadLetterTargetArn:
+                    Fn::GetAtt:
+                        - "SeGhostQueue"
+                        - "Arn"
+                maxReceiveCount: 1
+
     SeGhostQueue:
         Type: AWS::SQS::Queue
         Properties:
             QueueName: SeGhostQueue
             MessageRetentionPeriod: 60
+
+    myQueuePolicy:
+        Type: AWS::SQS::QueuePolicy
+        Properties:
+            Queues:
+                - !Ref SeAuthenticationQueue
+                - !Ref SeErrorQueue
+                - !Ref SeOnProcessQueue
+            PolicyDocument:
+                Statement:
+                    Effect: Allow
+                    Principal: "*"
+                    Action: "sqs:*"
+                    Resource: "*"
+                    Condition:
+                        ArnEquals:
+                            "aws:SourceArn": !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-AUTHENTICATE-TOPIC'
+
+    AuthenticateSubscriptionQueue:
+        Type: AWS::SNS::Subscription
+        Properties:
+            Endpoint: !GetAtt SeAuthenticationQueue.Arn
+            Protocol: sqs
+            RawMessageDelivery: true
+            TopicArn: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-AUTHENTICATE-TOPIC'
+
+    ErrorSubscriptionQueue:
+        Type: AWS::SNS::Subscription
+        Properties:
+            Endpoint: !GetAtt SeErrorQueue.Arn
+            Protocol: sqs
+            RawMessageDelivery: true
+            TopicArn: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ERROR-TOPIC'
 
     # Lambdas section ---------------------------------------------------------------------------------------
     FlexSmIterator:
@@ -224,10 +269,10 @@ Resources:
                 - AWSLambdaDynamoDBExecutionRole
                 - CloudWatchLogsFullAccess
             Events:
-                SQSEvent:
-                    Type: SQS
+                SNSEvent:
+                    Type: SNS
                     Properties:
-                        Queue: !GetAtt SeErrorQueue.Arn
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ERROR-TOPIC'
 
     SearchEngineCloudLogs:
         Type: AWS::Serverless::Function
@@ -378,10 +423,10 @@ Resources:
             Policies:
                 - AmazonSNSFullAccess
             Events:
-                SQSEvent:
-                    Type: SQS
+                SNSEvent:
+                    Type: SNS
                     Properties:
-                        Queue: !GetAtt SeErrorQueue.Arn
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ERROR-TOPIC'
 
     # api gateway lambdas ----------------------------------------------------------------------------------------
     ApiCreateUser:
