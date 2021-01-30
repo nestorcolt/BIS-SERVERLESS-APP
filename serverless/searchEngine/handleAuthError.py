@@ -12,8 +12,7 @@ log = LOGGER.logger
 
 def function_handler(event, context):
     # Get the records list
-    records = event["Records"][0]
-    user_id = json.loads(records["Sns"]["Message"])
+    user_id = json.loads(event["Records"][0]["Sns"]["Message"])
     user_stream = constants.USER_PLACEHOLDER.format(user_id)
 
     try:
@@ -21,7 +20,7 @@ def function_handler(event, context):
             # update dynamo DB
             dynamo_manager.update_item(constants.USERS_TABLE_NAME,
                                        constants.TABLE_PK,
-                                       user_id,
+                                       str(user_id),
                                        {"search_blocks": False})
 
             message = "ERROR: User has been deactivated due an authentication failure"
