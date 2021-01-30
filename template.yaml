@@ -6,12 +6,12 @@ Globals:
     Function:
         Runtime: python3.6
         Layers:
-            - arn:aws:lambda:us-east-1:436783151981:layer:PythonPackagesLayer:3 # Change account ID also here
+            - arn:aws:lambda:us-east-1:320132171574:layer:PythonPackagesLayer:7 # Change account ID also here
 
 Parameters:
     AccountId:
         Type: String
-        Default: 436783151981
+        Default: 320132171574
 
 Resources:
     IterStateMachineLogs:
