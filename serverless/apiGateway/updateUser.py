@@ -1,5 +1,6 @@
-from Cloud.packages.dynamo import dynamo_manager, controller
+from Cloud.packages.dynamo import dynamo_manager
 from Cloud.packages.constants import constants
+from Cloud.packages.utilities import utils
 from Cloud.packages import logger
 import json
 
@@ -11,7 +12,7 @@ log = LOGGER.logger
 
 
 def function_handler(event, context):
-    new_headers = controller.map_request_body({}, json.loads(event["body"]))
+    new_headers = utils.map_request_body({}, json.loads(event["body"]))
     user_id = new_headers.pop(constants.TABLE_PK)
 
     status_code = 200

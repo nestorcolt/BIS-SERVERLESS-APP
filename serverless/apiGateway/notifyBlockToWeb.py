@@ -1,4 +1,4 @@
-from Cloud.packages.dynamo import controller
+from Cloud.packages.requests import request_manager
 from Cloud.packages import logger
 import json
 
@@ -20,7 +20,7 @@ def lambda_handler(event, context):
     user = block["user_id"]
     data = block["data"]
 
-    response = controller.send_block_to_web(user, data)
+    response = request_manager.send_block_to_web(user, data)
     log.info(f"Response of request: {response.status_code}")
 
 ##############################################################################################

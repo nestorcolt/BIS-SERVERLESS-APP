@@ -1,5 +1,6 @@
-from Cloud.packages.dynamo import controller
 from Cloud.packages.constants import constants
+from Cloud.packages.dynamo import controller
+from Cloud.packages.utilities import utils
 from Cloud.packages import logger
 import json
 
@@ -28,7 +29,7 @@ def function_handler(event, context):
 
     if blocks:
         # cast any Decimal value to float because Decimal is not json serializable
-        blocks_response = list(map(lambda block: controller.map_response_body({}, block), blocks))
+        blocks_response = list(map(lambda block: utils.map_response_body({}, block), blocks))
 
     return {
         "statusCode": status_code,
