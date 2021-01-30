@@ -176,6 +176,28 @@ Resources:
                     Properties:
                         Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-SLEEP-TOPIC'
 
+    ErrorSearchEngine:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 512
+            Timeout: 20
+            FunctionName: ErrorSearchEngine
+            Description: Deactivate search engine on error
+            CodeUri: serverless/searchEngine/
+            Handler: handleAuthError.function_handler
+            Layers:
+                - !Ref CustomAppLayers
+            Policies:
+                - AmazonSNSFullAccess
+                - AmazonDynamoDBFullAccess
+                - AWSLambdaDynamoDBExecutionRole
+                - CloudWatchLogsFullAccess
+            Events:
+                SNSEvent:
+                    Type: SNS
+                    Properties:
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ERROR-TOPIC'
+
     SearchEngineCloudLogs:
         Type: AWS::Serverless::Function
         Properties:
