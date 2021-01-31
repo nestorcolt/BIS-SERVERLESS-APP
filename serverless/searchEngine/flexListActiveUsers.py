@@ -29,7 +29,7 @@ def function_handler(event, context):
         # This means an user is on a queue to be process and will avoid the over iteration while the current
         # task is not done yet avoiding duplicate task on this user ahead in the flow
         user_id = user_data.get(constants.TABLE_PK)
-        if sqs_manager.get_user_in_queue_body(user_id):
+        if sqs_manager.get_user_in_queue_body(user_id, constants.SE_ON_PROCESS):
             continue
 
         if len(access_token) < 10 or not access_token.startswith("Atna|"):
