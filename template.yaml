@@ -269,6 +269,7 @@ Resources:
             Policies:
                 - AmazonDynamoDBFullAccess
                 - AmazonSNSFullAccess
+                - AmazonSQSFullAccess
 
     CleanUpTables:
         Type: AWS::Serverless::Function
