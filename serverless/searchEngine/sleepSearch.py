@@ -1,4 +1,5 @@
 from Cloud.packages.dynamo import controller
+from Cloud.packages.constants import constants
 from Cloud.packages import logger
 import json
 
@@ -10,8 +11,7 @@ log = LOGGER.logger
 
 def function_handler(event, context):
     # Get the records list
-    records = event["Records"][0]
-    user_id = json.loads(records["Sns"]["Message"])
+    user_id = json.loads(event["Records"][0]["Sns"]["Message"])[constants.TABLE_PK]
 
     try:
         if user_id:

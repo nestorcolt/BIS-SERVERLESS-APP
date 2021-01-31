@@ -1,4 +1,5 @@
 from Cloud.packages.requests import request_manager
+from Cloud.packages.constants import constants
 from Cloud.packages import logger
 import json
 
@@ -14,7 +15,7 @@ def lambda_handler(event, context):
     This SNS event will be called inside of an Ec2 instance from the search engine
     """
     # Get the records list
-    user_id = json.loads(event["Records"][0]["Sns"]["Message"])
+    user_id = json.loads(event["Records"][0]["Sns"]["Message"])[constants.TABLE_PK]
     response = request_manager.send_error_to_web(user_id)
     log.info(f"Response of request: {response.status_code}")
 

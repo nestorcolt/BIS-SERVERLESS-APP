@@ -12,7 +12,7 @@ log = LOGGER.logger
 
 def function_handler(event, context):
     # Get the records list
-    user_id = json.loads(event["Records"][0]["Sns"]["Message"])
+    user_id = json.loads(event["Records"][0]["Sns"]["Message"])[constants.TABLE_PK]
     user_stream = constants.USER_PLACEHOLDER.format(user_id)
 
     try:
