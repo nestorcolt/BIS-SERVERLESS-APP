@@ -1,6 +1,7 @@
 from Cloud.packages.constants import constants
 from Cloud.packages.dynamo import controller
 from Cloud.packages.sns import sns_manager
+from Cloud.packages.sqs import sqs_manager
 from Cloud.packages import logger
 import simplejson
 
@@ -25,8 +26,14 @@ def function_handler(event, context):
         if not search_blocks:
             continue
 
+        # This means an user is on a queue to be process and will avoid the over iteration while the current
+        # task is not done yet avoiding duplicate task on this user ahead in the flow
+        user_id = user_data.get(constants.TABLE_PK)
+        if sqs_manager.get_user_in_queue_body(user_id):
+            continue
+
         if len(access_token) < 10 or not access_token.startswith("Atna|"):
-            log.info(f"User {user_data.get('user_id')} is being authenticated ...")
+            log.info(f"User {user_id} is being authenticated ...")
             topic_arn = sns_manager.get_topic_by_name(constants.SE_AUTHENTICATE_TOPIC)[0]["TopicArn"]
             sns_manager.sns_publish_to_topic(topic_arn=topic_arn,
                                              message=simplejson.dumps(user_data, use_decimal=True),

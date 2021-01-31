@@ -140,22 +140,6 @@ Resources:
             BuildMethod: python3.6
 
     # SQS section ---------------------------------------------------------------------------------------
-    SeAuthenticationQueue:
-        Type: AWS::SQS::Queue
-        Properties:
-            QueueName: SeAuthenticationQueue
-            ReceiveMessageWaitTimeSeconds: 1
-            MessageRetentionPeriod: 60
-            VisibilityTimeout: 0
-
-    SeErrorQueue:
-        Type: AWS::SQS::Queue
-        Properties:
-            QueueName: SeErrorQueue
-            ReceiveMessageWaitTimeSeconds: 1
-            MessageRetentionPeriod: 60
-            VisibilityTimeout: 0
-
     SeOnProcessQueue:
         Type: AWS::SQS::Queue
         Properties:
@@ -168,8 +152,6 @@ Resources:
         Type: AWS::SQS::QueuePolicy
         Properties:
             Queues:
-                - !Ref SeAuthenticationQueue
-                - !Ref SeErrorQueue
                 - !Ref SeOnProcessQueue
             PolicyDocument:
                 Statement:
@@ -181,7 +163,7 @@ Resources:
     AuthenticateSubscriptionQueue:
         Type: AWS::SNS::Subscription
         Properties:
-            Endpoint: !GetAtt SeAuthenticationQueue.Arn
+            Endpoint: !GetAtt SeOnProcessQueue.Arn
             Protocol: sqs
             RawMessageDelivery: true
             TopicArn: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-AUTHENTICATE-TOPIC'
@@ -189,7 +171,7 @@ Resources:
     ErrorSubscriptionQueue:
         Type: AWS::SNS::Subscription
         Properties:
-            Endpoint: !GetAtt SeErrorQueue.Arn
+            Endpoint: !GetAtt SeOnProcessQueue.Arn
             Protocol: sqs
             RawMessageDelivery: true
             TopicArn: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ERROR-TOPIC'
