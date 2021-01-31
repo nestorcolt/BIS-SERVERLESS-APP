@@ -144,43 +144,25 @@ Resources:
         Type: AWS::SQS::Queue
         Properties:
             QueueName: SeAuthenticationQueue
+            ReceiveMessageWaitTimeSeconds: 1
             MessageRetentionPeriod: 60
-            RedrivePolicy:
-                deadLetterTargetArn:
-                    Fn::GetAtt:
-                        - "SeGhostQueue"
-                        - "Arn"
-                maxReceiveCount: 1
+            VisibilityTimeout: 0
 
     SeErrorQueue:
         Type: AWS::SQS::Queue
         Properties:
             QueueName: SeErrorQueue
+            ReceiveMessageWaitTimeSeconds: 1
             MessageRetentionPeriod: 60
-            RedrivePolicy:
-                deadLetterTargetArn:
-                    Fn::GetAtt:
-                        - "SeGhostQueue"
-                        - "Arn"
-                maxReceiveCount: 1
+            VisibilityTimeout: 0
 
     SeOnProcessQueue:
         Type: AWS::SQS::Queue
         Properties:
             QueueName: SeOnProcessQueue
+            ReceiveMessageWaitTimeSeconds: 1
             MessageRetentionPeriod: 60
-            RedrivePolicy:
-                deadLetterTargetArn:
-                    Fn::GetAtt:
-                        - "SeGhostQueue"
-                        - "Arn"
-                maxReceiveCount: 1
-
-    SeGhostQueue:
-        Type: AWS::SQS::Queue
-        Properties:
-            QueueName: SeGhostQueue
-            MessageRetentionPeriod: 60
+            VisibilityTimeout: 0
 
     myQueuePolicy:
         Type: AWS::SQS::QueuePolicy
@@ -195,9 +177,6 @@ Resources:
                     Principal: "*"
                     Action: "sqs:*"
                     Resource: "*"
-                    Condition:
-                        ArnEquals:
-                            "aws:SourceArn": !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-AUTHENTICATE-TOPIC'
 
     AuthenticateSubscriptionQueue:
         Type: AWS::SNS::Subscription
