@@ -176,6 +176,14 @@ Resources:
             RawMessageDelivery: true
             TopicArn: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ERROR-TOPIC'
 
+    SleepSubscriptionQueue:
+        Type: AWS::SNS::Subscription
+        Properties:
+            Endpoint: !GetAtt SeOnProcessQueue.Arn
+            Protocol: sqs
+            RawMessageDelivery: true
+            TopicArn: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-SLEEP-TOPIC'
+
     # Lambdas section ---------------------------------------------------------------------------------------
     FlexSmIterator:
         Type: AWS::Serverless::Function
