@@ -433,7 +433,7 @@ Resources:
     CognitoUserPoolClient:
         Type: AWS::Cognito::UserPoolClient
         Properties:
-            ClientName: sam_api_gateway_cup_auth_cognito_client
+            ClientName: api_gateway_bis_auth_cognito_client
             UserPoolId: !Ref MyCognitoUserPool
 
     PreSignupLambdaFunction:
