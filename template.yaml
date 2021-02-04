@@ -6,12 +6,12 @@ Globals:
     Function:
         Runtime: python3.6
         Layers:
-            - arn:aws:lambda:us-east-1:320132171574:layer:PythonPackagesLayer:8 # Change account ID also here
+            - Fn::ImportValue: python-packages-layer-version # Change account ID also here
 
 Parameters:
     AccountId:
         Type: String
-        Default: 320132171574
+        Default: AWS::AccountId
 
 Resources:
     IterStateMachineLogs:
