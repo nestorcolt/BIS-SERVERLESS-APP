@@ -398,6 +398,62 @@ Resources:
                     Properties:
                         Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ERROR-TOPIC'
 
+    # Api Gateway  ----------------------------------------------------------------------------------------
+    MyApi:
+        Type: AWS::Serverless::Api
+        Properties:
+            StageName: Prod
+            Cors:
+                AllowMethods: "'*'"
+                AllowHeaders: "'*'"
+                AllowOrigin: "'*'"
+            Auth:
+                DefaultAuthorizer: MyCognitoUserPoolAuthorizer
+                AddDefaultAuthorizerToCorsPreflight: False
+                Authorizers:
+                    MyCognitoUserPoolAuthorizer:
+                        UserPoolArn: !GetAtt MyCognitoUserPool.Arn
+
+    MyCognitoUserPool:
+        Type: AWS::Cognito::UserPool
+        Properties:
+            UserPoolName: bis-api-gateway-cognito-pool
+            LambdaConfig:
+                PreSignUp: !GetAtt PreSignupLambdaFunction.Arn
+            Policies:
+                PasswordPolicy:
+                    MinimumLength: 8
+            UsernameAttributes:
+                - email
+            Schema:
+                -   AttributeDataType: String
+                    Name: email
+                    Required: false
+
+    CognitoUserPoolClient:
+        Type: AWS::Cognito::UserPoolClient
+        Properties:
+            ClientName: sam_api_gateway_cup_auth_cognito_client
+            UserPoolId: !Ref MyCognitoUserPool
+
+    PreSignupLambdaFunction:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 256
+            Timeout: 5
+            FunctionName: PreSignupLambdaFunction
+            Description: Handles api auth
+            CodeUri: serverless/apiGateway/
+            Handler: SignUp.function_handler
+
+    LambdaCognitoUserPoolExecutionPermission:
+        Type: AWS::Lambda::Permission
+        Properties:
+            Action: lambda:InvokeFunction
+            FunctionName: !GetAtt PreSignupLambdaFunction.Arn
+            Principal: cognito-idp.amazonaws.com
+            SourceArn: !Sub 'arn:${AWS::Partition}:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${MyCognitoUserPool}'
+
     # api gateway lambdas ----------------------------------------------------------------------------------------
     ApiCreateUser:
         Type: AWS::Serverless::Function
@@ -414,9 +470,10 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - AmazonAPIGatewayInvokeFullAccess
             Events:
-                Endpoints:
+                BisApiGateway:
                     Type: Api
                     Properties:
+                        RestApiId: !Ref MyApi
                         Path: /users
                         Method: post
 
@@ -435,9 +492,10 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - AmazonAPIGatewayInvokeFullAccess
             Events:
-                Endpoints:
+                BisApiGateway:
                     Type: Api
                     Properties:
+                        RestApiId: !Ref MyApi
                         Path: /users
                         Method: delete
 
@@ -456,9 +514,10 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - AmazonAPIGatewayInvokeFullAccess
             Events:
-                Endpoints:
+                BisApiGateway:
                     Type: Api
                     Properties:
+                        RestApiId: !Ref MyApi
                         Path: /users
                         Method: put
 
@@ -477,8 +536,30 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - AmazonAPIGatewayInvokeFullAccess
             Events:
-                Endpoints:
+                BisApiGateway:
                     Type: Api
                     Properties:
+                        RestApiId: !Ref MyApi
                         Path: /blocks
                         Method: post
+
+Outputs:
+    Region:
+        Description: "Region"
+        Value: !Ref AWS::Region
+
+    ApiId:
+        Description: "API ID"
+        Value: !Ref MyApi
+
+    ApiUrl:
+        Description: "API endpoint URL for Prod environment"
+        Value: !Sub 'https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/prod/'
+
+    CognitoUserPoolId:
+        Description: "Cognito User Pool Id"
+        Value: !Ref MyCognitoUserPool
+
+    CognitoUserPoolClientId:
+        Description: "Cognito User Pool Client Id"
+        Value: !Ref CognitoUserPoolClient
