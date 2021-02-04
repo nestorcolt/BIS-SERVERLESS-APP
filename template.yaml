@@ -6,7 +6,7 @@ Globals:
     Function:
         Runtime: python3.6
         Layers:
-            - Fn::ImportValue: python-packages-layer-version # Change account ID also here
+            - Fn::ImportValue: python-packages-layer-version # Importing the layer from a different stack
 
 Parameters:
     AccountId:
