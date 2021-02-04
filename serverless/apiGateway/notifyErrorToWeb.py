@@ -1,14 +1,17 @@
 from Cloud.packages.requests import request_manager
 from Cloud.packages.constants import constants
+from aws_lambda_powertools import Tracer
 from Cloud.packages import logger
 import json
 
 LOGGER = logger.Logger(__name__)
 log = LOGGER.logger
 
-
 ##############################################################################################
+tracer = Tracer()
 
+
+@tracer.capture_lambda_handler
 def lambda_handler(event, context):
     """
     Triggered by an SNS event will put a new entry on the blocks table with the captured blocks from the user.

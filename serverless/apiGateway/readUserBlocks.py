@@ -1,15 +1,18 @@
 from Cloud.packages.constants import constants
 from Cloud.packages.dynamo import controller
 from Cloud.packages.utilities import utils
+from aws_lambda_powertools import Tracer
 from Cloud.packages import logger
 import json
 
 LOGGER = logger.Logger(__name__)
 log = LOGGER.logger
 
-
 ##############################################################################################
+tracer = Tracer()
 
+
+@tracer.capture_lambda_handler
 def function_handler(event, context):
     blocks_response = []
     status_code = 200

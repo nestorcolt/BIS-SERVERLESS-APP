@@ -1,15 +1,18 @@
 from Cloud.packages.cloudwatch import logs_manager
 from Cloud.packages.dynamo import dynamo_manager
 from Cloud.packages.constants import constants
+from aws_lambda_powertools import Tracer
 from Cloud.packages import logger
 import json
 
 LOGGER = logger.Logger(__name__)
 log = LOGGER.logger
 
-
 ##############################################################################################
+tracer = Tracer()
 
+
+@tracer.capture_lambda_handler
 def function_handler(event, context):
     # Get the records list
     user_id = json.loads(event["Records"][0]["Sns"]["Message"])[constants.TABLE_PK]

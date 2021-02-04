@@ -1,5 +1,6 @@
 from Cloud.packages.dynamo import dynamo_manager
 from Cloud.packages.constants import constants
+from aws_lambda_powertools import Tracer
 from Cloud.packages import logger
 import json
 
@@ -9,7 +10,10 @@ log = LOGGER.logger
 
 ##############################################################################################
 
+tracer = Tracer()
 
+
+@tracer.capture_lambda_handler
 def function_handler(event, context):
     user_id = json.loads(event["body"]).pop(constants.TABLE_PK)
 

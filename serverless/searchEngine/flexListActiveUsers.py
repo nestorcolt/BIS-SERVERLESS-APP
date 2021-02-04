@@ -2,15 +2,18 @@ from Cloud.packages.constants import constants
 from Cloud.packages.dynamo import controller
 from Cloud.packages.sns import sns_manager
 from Cloud.packages.sqs import sqs_manager
+from aws_lambda_powertools import Tracer
 from Cloud.packages import logger
 import simplejson
 
 LOGGER = logger.Logger(__name__)
 log = LOGGER.logger
 
-
 ##############################################################################################
+tracer = Tracer()
 
+
+@tracer.capture_lambda_handler
 def function_handler(event, context):
     """
     Checks for an attribute name "last_active" and if the time span is greater than 30 minutes ago from now
