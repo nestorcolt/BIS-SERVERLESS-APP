@@ -22,7 +22,6 @@ def authenticate_and_get_token():
     print("Access token:", resp['AuthenticationResult']['AccessToken'])
     print("Refresh token:", resp['AuthenticationResult']['RefreshToken'])
     print("ID token:", resp['AuthenticationResult']['IdToken'])
-    print(resp)
 
 
 ##############################################################################################
