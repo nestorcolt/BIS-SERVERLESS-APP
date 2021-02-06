@@ -440,6 +440,9 @@ Resources:
             UserPoolId: !Ref MyCognitoUserPool
             RefreshTokenValidity: 365
             GenerateSecret: false
+            ExplicitAuthFlows:
+                - ALLOW_ADMIN_USER_PASSWORD_AUTH
+                - ALLOW_REFRESH_TOKEN_AUTH
 
     PreSignupLambdaFunction:
         Type: AWS::Serverless::Function
