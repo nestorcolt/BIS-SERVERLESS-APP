@@ -7,6 +7,14 @@ client = boto3.client('cognito-idp')
 
 ##############################################################################################
 def authenticate_and_get_token(event, context):
+    """
+
+    Authenticate and get the refresh and access token
+
+    """
+    body = event["body"]
+    username = json.loads(body).get("username")
+    password = json.loads(body).get("password")
     config = get_cognito_configuration()
 
     resp = client.admin_initiate_auth(
@@ -14,12 +22,10 @@ def authenticate_and_get_token(event, context):
         ClientId=config["client"],
         AuthFlow='ADMIN_NO_SRP_AUTH',
         AuthParameters={
-            "USERNAME": "web",
-            "PASSWORD": "Cognito18990129e!"
+            "USERNAME": username,
+            "PASSWORD": password
         }
     )
-
-    print("Log in success")
 
     return {
         "statusCode": 200,
