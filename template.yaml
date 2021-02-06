@@ -445,7 +445,11 @@ Resources:
         Properties:
             ClientName: api_gateway_bis_auth_cognito_client
             UserPoolId: !Ref MyCognitoUserPool
-            RefreshTokenValidity: 365
+            TokenValidityUnits:
+                RefreshToken: "days"
+                AccessToken: "minutes"
+            RefreshTokenValidity: 3650
+            AccessTokenValidity: 1440
             GenerateSecret: false
             ExplicitAuthFlows:
                 - ALLOW_ADMIN_USER_PASSWORD_AUTH
