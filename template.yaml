@@ -394,9 +394,16 @@ Resources:
                         Topic: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-ERROR-TOPIC'
 
     # Api Gateway  ----------------------------------------------------------------------------------------
-    MyApi:
+    AuthApi:
         Type: AWS::Serverless::Api
         Properties:
+            Name: Bis-Auth-Api
+            StageName: Prod
+
+    MainApi:
+        Type: AWS::Serverless::Api
+        Properties:
+            Name: Bis-Main-Api
             StageName: Prod
             Cors:
                 AllowMethods: "'*'"
@@ -463,6 +470,25 @@ Resources:
             SourceArn: !Sub 'arn:${AWS::Partition}:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${MyCognitoUserPool}'
 
     # api gateway lambdas ----------------------------------------------------------------------------------------
+    GetWebAuthentication:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 256
+            Timeout: 5
+            FunctionName: GetWebAuthentication
+            Description: Parsing the username and password of cognito user will retreive the tokens
+            CodeUri: serverless/apiGateway/
+            Handler: authenticate.authenticate_and_get_token
+            Policies:
+                - AmazonCognitoPowerUser
+            Events:
+                AuthApiGateway:
+                    Type: Api
+                    Properties:
+                        RestApiId: !Ref AuthApi
+                        Path: /auth
+                        Method: post
+
     ApiCreateUser:
         Type: AWS::Serverless::Function
         Properties:
@@ -481,7 +507,7 @@ Resources:
                 BisApiGateway:
                     Type: Api
                     Properties:
-                        RestApiId: !Ref MyApi
+                        RestApiId: !Ref MainApi
                         Path: /users
                         Method: post
 
@@ -503,7 +529,7 @@ Resources:
                 BisApiGateway:
                     Type: Api
                     Properties:
-                        RestApiId: !Ref MyApi
+                        RestApiId: !Ref MainApi
                         Path: /users
                         Method: delete
 
@@ -525,7 +551,7 @@ Resources:
                 BisApiGateway:
                     Type: Api
                     Properties:
-                        RestApiId: !Ref MyApi
+                        RestApiId: !Ref MainApi
                         Path: /users
                         Method: put
 
@@ -547,7 +573,7 @@ Resources:
                 BisApiGateway:
                     Type: Api
                     Properties:
-                        RestApiId: !Ref MyApi
+                        RestApiId: !Ref MainApi
                         Path: /blocks
                         Method: post
 
@@ -558,11 +584,11 @@ Outputs:
 
     ApiId:
         Description: "API ID"
-        Value: !Ref MyApi
+        Value: !Ref MainApi
 
     ApiUrl:
         Description: "API endpoint URL for Prod environment"
-        Value: !Sub 'https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/prod/'
+        Value: !Sub 'https://${MainApi}.execute-api.${AWS::Region}.amazonaws.com/prod/'
 
     CognitoUserPoolId:
         Description: "Cognito User Pool Id"

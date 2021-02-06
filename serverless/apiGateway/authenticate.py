@@ -1,11 +1,12 @@
 import boto3
+import json
 
 USER_POOL_NAME = "bis-api-gateway-cognito-pool"
 client = boto3.client('cognito-idp')
 
 
 ##############################################################################################
-def authenticate_and_get_token():
+def authenticate_and_get_token(event, context):
     config = get_cognito_configuration()
 
     resp = client.admin_initiate_auth(
@@ -19,9 +20,13 @@ def authenticate_and_get_token():
     )
 
     print("Log in success")
-    print("Access token:", resp['AuthenticationResult']['AccessToken'])
-    print("Refresh token:", resp['AuthenticationResult']['RefreshToken'])
-    print("ID token:", resp['AuthenticationResult']['IdToken'])
+
+    return {
+        "statusCode": 200,
+        "body": json.dumps({
+            "message": resp['AuthenticationResult'],
+        }),
+    }
 
 
 ##############################################################################################
@@ -35,6 +40,4 @@ def get_cognito_configuration():
         if client_apps:
             return {"pool": pools[0]["Id"], "client": client_apps[0]["ClientId"]}
 
-
 ##############################################################################################
-authenticate_and_get_token()
