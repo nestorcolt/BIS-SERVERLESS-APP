@@ -16,21 +16,27 @@ def authenticate_and_get_token(event, context):
     username = json.loads(body).get("username")
     password = json.loads(body).get("password")
     config = get_cognito_configuration()
+    status_code = 200
 
-    resp = client.admin_initiate_auth(
-        UserPoolId=config["pool"],
-        ClientId=config["client"],
-        AuthFlow='ADMIN_NO_SRP_AUTH',
-        AuthParameters={
-            "USERNAME": username,
-            "PASSWORD": password
-        }
-    )
+    try:
+        response = client.admin_initiate_auth(
+            UserPoolId=config["pool"],
+            ClientId=config["client"],
+            AuthFlow='ADMIN_NO_SRP_AUTH',
+            AuthParameters={
+                "USERNAME": username,
+                "PASSWORD": password
+            }
+        )['AuthenticationResult']
+
+    except Exception as e:
+        status_code = 410
+        response = e.__str__()
 
     return {
-        "statusCode": 200,
+        "statusCode": status_code,
         "body": json.dumps({
-            "message": resp['AuthenticationResult'],
+            "message": response,
         }),
     }
 
