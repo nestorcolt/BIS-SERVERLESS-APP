@@ -6,7 +6,7 @@ Globals:
     Function:
         Runtime: python3.6
         Layers:
-            - Fn::ImportValue: python-packages-layer-version # Importing the layer from a different stack
+            -   Fn::ImportValue: python-packages-layer-version # Importing the layer from a different stack
 
 Parameters:
     AccountId:
@@ -418,23 +418,36 @@ Resources:
         Type: AWS::Cognito::UserPool
         Properties:
             UserPoolName: bis-api-gateway-cognito-pool
+            UsernameConfiguration:
+                CaseSensitive: false
+            AutoVerifiedAttributes:
+                - email
             LambdaConfig:
                 PreSignUp: !GetAtt PreSignupLambdaFunction.Arn
             Policies:
                 PasswordPolicy:
                     MinimumLength: 8
             UsernameAttributes:
-                - email
+                - name
             Schema:
                 -   AttributeDataType: String
+                    Name: name
+                    Required: true
+                    Mutable: true
+
+                -   AttributeDataType: String
                     Name: email
-                    Required: false
+                    Required: true
+                    Mutable: false
 
     CognitoUserPoolClient:
         Type: AWS::Cognito::UserPoolClient
         Properties:
             ClientName: api_gateway_bis_auth_cognito_client
             UserPoolId: !Ref MyCognitoUserPool
+            RefreshTokenValidity: 365
+            AccessTokenValidity: 30
+            GenerateSecret: false
 
     PreSignupLambdaFunction:
         Type: AWS::Serverless::Function
