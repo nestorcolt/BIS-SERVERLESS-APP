@@ -478,7 +478,9 @@ Resources:
             FunctionName: GetWebAuthentication
             Description: Parsing the username and password of cognito user will retreive the tokens
             CodeUri: serverless/apiGateway/
-            Handler: authenticate.authenticate_and_get_token
+            Handler: authenticate.function_handler
+            Layers:
+                - !Ref CustomAppLayers
             Policies:
                 - AmazonCognitoPowerUser
             Events:
