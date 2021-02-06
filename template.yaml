@@ -8,11 +8,6 @@ Globals:
         Layers:
             -   Fn::ImportValue: python-packages-layer-version # Importing the layer from a different stack
 
-Parameters:
-    AccountId:
-        Type: String
-        Default: AWS::AccountId
-
 Resources:
     IterStateMachineLogs:
         Type: AWS::Logs::LogGroup
@@ -166,7 +161,7 @@ Resources:
             Endpoint: !GetAtt SeOnProcessQueue.Arn
             Protocol: sqs
             RawMessageDelivery: true
-            TopicArn: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-AUTHENTICATE-TOPIC'
+            TopicArn: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-AUTHENTICATE-TOPIC'
 
     ErrorSubscriptionQueue:
         Type: AWS::SNS::Subscription
@@ -174,7 +169,7 @@ Resources:
             Endpoint: !GetAtt SeOnProcessQueue.Arn
             Protocol: sqs
             RawMessageDelivery: true
-            TopicArn: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ERROR-TOPIC'
+            TopicArn: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-ERROR-TOPIC'
 
     SleepSubscriptionQueue:
         Type: AWS::SNS::Subscription
@@ -182,7 +177,7 @@ Resources:
             Endpoint: !GetAtt SeOnProcessQueue.Arn
             Protocol: sqs
             RawMessageDelivery: true
-            TopicArn: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-SLEEP-TOPIC'
+            TopicArn: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-SLEEP-TOPIC'
 
     # Lambdas section ---------------------------------------------------------------------------------------
     FlexSmIterator:
@@ -219,7 +214,7 @@ Resources:
                 SNSEvent:
                     Type: SNS
                     Properties:
-                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-SLEEP-TOPIC'
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-SLEEP-TOPIC'
 
     ErrorSearchEngine:
         Type: AWS::Serverless::Function
@@ -241,7 +236,7 @@ Resources:
                 SNSEvent:
                     Type: SNS
                     Properties:
-                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ERROR-TOPIC'
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-ERROR-TOPIC'
 
     SearchEngineCloudLogs:
         Type: AWS::Serverless::Function
@@ -261,7 +256,7 @@ Resources:
                 SNSEvent:
                     Type: SNS
                     Properties:
-                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-LOGS-TOPIC'
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-LOGS-TOPIC'
 
     FlexListActiveUsers:
         Type: AWS::Serverless::Function
@@ -337,7 +332,7 @@ Resources:
                 SNSEvent:
                     Type: SNS
                     Properties:
-                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ACCEPTED-TOPIC'
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-ACCEPTED-TOPIC'
 
     UpdateOffersTable:
         Type: AWS::Serverless::Function
@@ -357,7 +352,7 @@ Resources:
                 SNSEvent:
                     Type: SNS
                     Properties:
-                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-OFFERS-TOPIC'
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-OFFERS-TOPIC'
 
     NotifyBlockToWeb:
         Type: AWS::Serverless::Function
@@ -377,7 +372,7 @@ Resources:
                 SNSEvent:
                     Type: SNS
                     Properties:
-                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ACCEPTED-TOPIC'
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-ACCEPTED-TOPIC'
 
     NotifyErrorToWeb:
         Type: AWS::Serverless::Function
@@ -396,7 +391,7 @@ Resources:
                 SNSEvent:
                     Type: SNS
                     Properties:
-                        Topic: !Sub 'arn:aws:sns:us-east-1:${AccountId}:SE-ERROR-TOPIC'
+                        Topic: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-ERROR-TOPIC'
 
     # Api Gateway  ----------------------------------------------------------------------------------------
     MyApi:
@@ -427,8 +422,6 @@ Resources:
             Policies:
                 PasswordPolicy:
                     MinimumLength: 8
-            UsernameAttributes:
-                - name
             Schema:
                 -   AttributeDataType: String
                     Name: name
@@ -446,7 +439,6 @@ Resources:
             ClientName: api_gateway_bis_auth_cognito_client
             UserPoolId: !Ref MyCognitoUserPool
             RefreshTokenValidity: 365
-            AccessTokenValidity: 30
             GenerateSecret: false
 
     PreSignupLambdaFunction:
@@ -457,7 +449,7 @@ Resources:
             FunctionName: PreSignupLambdaFunction
             Description: Handles api auth
             CodeUri: serverless/apiGateway/
-            Handler: SignUp.function_handler
+            Handler: signUp.function_handler
 
     LambdaCognitoUserPoolExecutionPermission:
         Type: AWS::Lambda::Permission
