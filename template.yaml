@@ -493,7 +493,7 @@ Resources:
                     Properties:
                         RestApiId: !Ref AuthApi
                         Path: /auth
-                        Method: get
+                        Method: post
 
     ApiCreateUser:
         Type: AWS::Serverless::Function
@@ -581,7 +581,7 @@ Resources:
                     Properties:
                         RestApiId: !Ref MainApi
                         Path: /blocks
-                        Method: get
+                        Method: post
 
 Outputs:
     Region:
