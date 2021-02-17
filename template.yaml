@@ -51,8 +51,8 @@ Resources:
                 -   AttributeName: user_id
                     KeyType: HASH
             ProvisionedThroughput:
-                ReadCapacityUnits: 100
-                WriteCapacityUnits: 100
+                ReadCapacityUnits: 10
+                WriteCapacityUnits: 10
 
     BlocksTable:
         Type: AWS::DynamoDB::Table
@@ -72,20 +72,12 @@ Resources:
                     KeyType: HASH
                 -   AttributeName: block_id
                     KeyType: RANGE
+            TimeToLiveSpecification:
+                AttributeName: tll_attr
+                Enabled: true
             ProvisionedThroughput:
-                ReadCapacityUnits: 100
-                WriteCapacityUnits: 100
-
-            GlobalSecondaryIndexes:
-                -   IndexName: Blocks_GSI1
-                    KeySchema:
-                        -   AttributeName: station_id
-                            KeyType: HASH
-                    Projection:
-                        ProjectionType: ALL
-                    ProvisionedThroughput:
-                        ReadCapacityUnits: 100
-                        WriteCapacityUnits: 100
+                ReadCapacityUnits: 10
+                WriteCapacityUnits: 10
 
     OffersTable:
         Type: AWS::DynamoDB::Table
@@ -105,9 +97,12 @@ Resources:
                     KeyType: HASH
                 -   AttributeName: offer_id
                     KeyType: RANGE
+            TimeToLiveSpecification:
+                AttributeName: tll_attr
+                Enabled: true
             ProvisionedThroughput:
-                ReadCapacityUnits: 100
-                WriteCapacityUnits: 100
+                ReadCapacityUnits: 50
+                WriteCapacityUnits: 50
 
             GlobalSecondaryIndexes:
                 -   IndexName: Offers_GSI1
@@ -117,8 +112,8 @@ Resources:
                     Projection:
                         ProjectionType: ALL
                     ProvisionedThroughput:
-                        ReadCapacityUnits: 2000
-                        WriteCapacityUnits: 2000
+                        ReadCapacityUnits: 50
+                        WriteCapacityUnits: 50
 
     # Lambda layers ----------------------------------------------------------------------------------------
     CustomAppLayers:
@@ -273,25 +268,6 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - AmazonSNSFullAccess
                 - AmazonSQSFullAccess
-
-    CleanUpTables:
-        Type: AWS::Serverless::Function
-        Properties:
-            MemorySize: 2048
-            Timeout: 361
-            FunctionName: CleanUpTables
-            Description: every mid night deletes entries older than 48 hours ago in blocks and offers tables
-            CodeUri: serverless/cronoLambdas/
-            Handler: cleanUpTables.lambda_handler
-            Layers:
-                - !Ref CustomAppLayers
-            Policies:
-                - AmazonDynamoDBFullAccess
-            Events:
-                StartScheduledEvent:
-                    Type: Schedule
-                    Properties:
-                        Schedule: cron(59 23 * * ? *)
 
     LogAllUsers:
         Type: AWS::Serverless::Function
