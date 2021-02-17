@@ -117,8 +117,8 @@ Resources:
                     Projection:
                         ProjectionType: ALL
                     ProvisionedThroughput:
-                        ReadCapacityUnits: 100
-                        WriteCapacityUnits: 100
+                        ReadCapacityUnits: 2000
+                        WriteCapacityUnits: 2000
 
     # Lambda layers ----------------------------------------------------------------------------------------
     CustomAppLayers:
@@ -282,7 +282,7 @@ Resources:
             FunctionName: CleanUpTables
             Description: every mid night deletes entries older than 48 hours ago in blocks and offers tables
             CodeUri: serverless/cronoLambdas/
-            Handler: CleanUpTables.lambda_handler
+            Handler: cleanUpTables.lambda_handler
             Layers:
                 - !Ref CustomAppLayers
             Policies:
