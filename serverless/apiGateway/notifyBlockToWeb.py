@@ -24,6 +24,6 @@ def lambda_handler(event, context):
     data = block["data"]
 
     response = request_manager.send_block_to_web(user, data)
-    log.info(f"Response of request: {response.status_code}")
+    log.info(f"Response of request: {response}")
 
 ##############################################################################################
