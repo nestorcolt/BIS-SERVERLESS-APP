@@ -363,8 +363,8 @@ Resources:
     NotifyBlockToWeb:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 1024
-            Timeout: 20
+            MemorySize: 512
+            Timeout: 10
             FunctionName: NotifyBlockToWeb
             Description: Send a post request to a web endpoint with the block info
             CodeUri: serverless/apiGateway/
@@ -374,6 +374,7 @@ Resources:
             Policies:
                 - AmazonSNSFullAccess
                 - AmazonDynamoDBFullAccess
+                - SecretsManagerReadWrite
             Events:
                 SNSEvent:
                     Type: SNS
@@ -384,7 +385,7 @@ Resources:
         Type: AWS::Serverless::Function
         Properties:
             MemorySize: 512
-            Timeout: 20
+            Timeout: 10
             FunctionName: NotifyErrorToWeb
             Description: Send a post request to a web endpoint with the error user info
             CodeUri: serverless/apiGateway/
@@ -393,6 +394,7 @@ Resources:
                 - !Ref CustomAppLayers
             Policies:
                 - AmazonSNSFullAccess
+                - SecretsManagerReadWrite
             Events:
                 SNSEvent:
                     Type: SNS
