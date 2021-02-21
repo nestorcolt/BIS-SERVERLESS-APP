@@ -234,6 +234,7 @@ Resources:
                 - AmazonSNSFullAccess
                 - AmazonDynamoDBFullAccess
                 - AWSLambdaDynamoDBExecutionRole
+                - CloudWatchLogsFullAccess
             Events:
                 SNSEvent:
                     Type: SNS
