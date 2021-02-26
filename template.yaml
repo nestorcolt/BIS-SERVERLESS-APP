@@ -298,14 +298,15 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - AmazonSNSFullAccess
                 - AmazonSQSFullAccess
+                - AWSLambdaExecute
 
     LogAllUsers:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 2048
-            Timeout: 900
+            MemorySize: 1024
+            Timeout: 20
             FunctionName: LogAllUsers
-            Description: every minute log all active users stats to cloudwatch
+            Description: log on demand all users to cloudwatch
             CodeUri: serverless/logging/
             Handler: logUserStats.lambda_handler
             Layers:
@@ -314,11 +315,22 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - CloudWatchLogsFullAccess
                 - AmazonSNSFullAccess
-            Events:
-                StartScheduledEvent:
-                    Type: Schedule
-                    Properties:
-                        Schedule: cron(0/1 * * * ? *)
+
+    LogSingleUserData:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 2048
+            Timeout: 900
+            FunctionName: LogSingleUserData
+            Description: log single user given the user Id
+            CodeUri: serverless/logging/
+            Handler: LogSingleUserData.lambda_handler
+            Layers:
+                - !Ref CustomAppLayers
+            Policies:
+                - AmazonDynamoDBFullAccess
+                - CloudWatchLogsFullAccess
+                - AmazonSNSFullAccess
 
     UpdateBlocksTable:
         Type: AWS::Serverless::Function
