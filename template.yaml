@@ -298,7 +298,7 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - AmazonSNSFullAccess
                 - AmazonSQSFullAccess
-                - AWSLambdaExecute
+                - AWSLambdaFullAccess
 
     LogAllUsers:
         Type: AWS::Serverless::Function
@@ -315,6 +315,7 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - CloudWatchLogsFullAccess
                 - AmazonSNSFullAccess
+                - AWSLambdaFullAccess
 
     LogSingleUserData:
         Type: AWS::Serverless::Function
@@ -331,6 +332,7 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - CloudWatchLogsFullAccess
                 - AmazonSNSFullAccess
+                - AWSLambdaFullAccess
 
     UpdateBlocksTable:
         Type: AWS::Serverless::Function
