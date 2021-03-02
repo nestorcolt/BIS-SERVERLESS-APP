@@ -23,6 +23,10 @@ def function_handler(event, context):
     user = offer["user_id"]
     data = offer["data"]
 
+    # if the offer is not stored already then will proceed to increment the counter
+    if not controller.offer_exists(user_id=user, offer_id=data["offerId"]):
+        controller.update_user_stats(user, validated=int(validated), offer=1)
+
     controller.put_new_offer(user, validated, data)
     log.info(f"New entry created for user {user} on the offers table. Data: {data}")
 

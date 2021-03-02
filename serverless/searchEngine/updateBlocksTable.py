@@ -23,6 +23,7 @@ def function_handler(event, context):
     data = block["data"]
 
     controller.put_new_block(user, data)
+    controller.update_user_stats(user_id=user, accepted=1)  # + 1 offer append to the existing counter
     log.info(f"New entry created for user {user} on the blocks table. Data: {data}")
 
 ##############################################################################################
