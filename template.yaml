@@ -350,6 +350,25 @@ Resources:
                 - AmazonSNSFullAccess
                 - AWSLambdaFullAccess
 
+    ResetUserStats:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 1024
+            Timeout: 300
+            FunctionName: ResetUserStats
+            Description: set back to zero all the stats atomic counters from all users on statistics table
+            CodeUri: serverless/searchEngine/
+            Handler: resetUserStats.lambda_handler
+            Layers:
+                - !Ref CustomAppLayers
+            Policies:
+                - AmazonDynamoDBFullAccess
+            Events:
+                StartScheduledEvent:
+                    Type: Schedule
+                    Properties:
+                        Schedule: cron(0 0 * * ? *)
+
     UpdateBlocksTable:
         Type: AWS::Serverless::Function
         Properties:
