@@ -54,6 +54,22 @@ Resources:
                 ReadCapacityUnits: 10
                 WriteCapacityUnits: 10
 
+    StatsTable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+            TableName: Statistics
+            StreamSpecification:
+                StreamViewType: NEW_AND_OLD_IMAGES
+            AttributeDefinitions:
+                -   AttributeName: user_id
+                    AttributeType: S
+            KeySchema:
+                -   AttributeName: user_id
+                    KeyType: HASH
+            ProvisionedThroughput:
+                ReadCapacityUnits: 10
+                WriteCapacityUnits: 10
+
     BlocksTable:
         Type: AWS::DynamoDB::Table
         Properties:
