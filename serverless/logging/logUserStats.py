@@ -13,7 +13,7 @@ tracer = Tracer()
 @tracer.capture_lambda_handler
 def lambda_handler(event, context):
     # LOG TO CLOUDWATCH ALL USERS WITH STATUS SEARCHING
-    last_active = controller.get_last_active_users()
+    last_active = controller.get_all_users()
 
     for user_data in last_active["Items"]:
         user = user_data[constants.TABLE_PK]
