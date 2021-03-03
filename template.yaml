@@ -11,6 +11,9 @@ Globals:
 Resources:
     IterStateMachineLogs:
         Type: AWS::Logs::LogGroup
+        Properties:
+            LogGroupName: StateIteratorLogs
+            RetentionInDays: 7
 
     # state machine  ----------------------------------------------------------------------------------------
     IteratorStateMachine:
