@@ -44,9 +44,7 @@ def function_handler(event, context):
             continue
 
         # If passed all validations let user search
-        topic_arn = sns_manager.get_topic_by_name(constants.SE_START_TOPIC)[0]["TopicArn"]
-        sns_manager.sns_publish_to_topic(topic_arn=topic_arn,
-                                         message=simplejson.dumps(user_data, use_decimal=True),
-                                         subject="User filters for search engine")
+        sqs_manager.send_message_to_queue(queue_name=constants.SE_START_QUEUE,
+                                          message=simplejson.dumps(user_data, use_decimal=True))
 
 ##############################################################################################

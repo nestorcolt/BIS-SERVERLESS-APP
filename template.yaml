@@ -149,6 +149,16 @@ Resources:
             BuildMethod: python3.6
 
     # SQS section ---------------------------------------------------------------------------------------
+
+    GetUserBlocksQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+            QueueName: GetUserBlocksQueue
+            ReceiveMessageWaitTimeSeconds: 0
+            MessageRetentionPeriod: 60
+            VisibilityTimeout: 30
+            DelaySeconds: 1
+
     SeOnProcessQueue:
         Type: AWS::SQS::Queue
         Properties:
@@ -200,14 +210,6 @@ Resources:
             Protocol: sqs
             RawMessageDelivery: true
             TopicArn: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-STOP-TOPIC'
-
-    StartSubscriptionQueue:
-        Type: AWS::SNS::Subscription
-        Properties:
-            Endpoint: !GetAtt SeOnProcessQueue.Arn
-            Protocol: sqs
-            RawMessageDelivery: true
-            TopicArn: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-START-TOPIC'
 
     # Lambdas section ---------------------------------------------------------------------------------------
     FlexSmIterator:
