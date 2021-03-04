@@ -213,7 +213,7 @@ Resources:
     FlexSmIterator:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 512
+            MemorySize: 256
             Timeout: 20
             FunctionName: FlexSmIterator
             Description: allow to iterate every second base on the state machine trigger
@@ -228,7 +228,7 @@ Resources:
     SleepSearchEngine:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 512
+            MemorySize: 256
             Timeout: 10
             FunctionName: SleepSearchEngine
             Description: Handles the put to sleep of a search engine Ec2 instance for 30 minutes
@@ -249,7 +249,7 @@ Resources:
     StopSearchEngine:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 512
+            MemorySize: 256
             Timeout: 10
             FunctionName: StopSearchEngine
             Description: Handles the  stop of an user in the search engine
@@ -271,7 +271,7 @@ Resources:
     ErrorSearchEngine:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 512
+            MemorySize: 256
             Timeout: 20
             FunctionName: ErrorSearchEngine
             Description: Deactivate search engine on error
@@ -313,7 +313,7 @@ Resources:
     FlexListActiveUsers:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 10240
+            MemorySize: 1024
             Timeout: 301
             FunctionName: FlexListActiveUsers
             Description: Check dynamo db and get the latest active users (after 30 mins sleep) search=True
@@ -347,8 +347,8 @@ Resources:
     LogSingleUserData:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 2048
-            Timeout: 900
+            MemorySize: 512
+            Timeout: 10
             FunctionName: LogSingleUserData
             Description: log single user given the user Id
             CodeUri: serverless/logging/
@@ -364,8 +364,8 @@ Resources:
     ResetUserStats:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 1024
-            Timeout: 300
+            MemorySize: 256
+            Timeout: 10
             FunctionName: ResetUserStats
             Description: set back to zero all the stats atomic counters from all users on statistics table
             CodeUri: serverless/searchEngine/
@@ -383,8 +383,8 @@ Resources:
     UpdateBlocksTable:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 1024
-            Timeout: 20
+            MemorySize: 128
+            Timeout: 5
             FunctionName: UpdateBlocksTable
             Description: Handles the update of blocks table with the blocks info
             CodeUri: serverless/searchEngine/
@@ -403,8 +403,8 @@ Resources:
     UpdateOffersTable:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 512
-            Timeout: 20
+            MemorySize: 128
+            Timeout: 5
             FunctionName: UpdateOffersTable
             Description: Handles the update of offers table with the offer info
             CodeUri: serverless/searchEngine/
@@ -423,7 +423,7 @@ Resources:
     NotifyBlockToWeb:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 512
+            MemorySize: 256
             Timeout: 10
             FunctionName: NotifyBlockToWeb
             Description: Send a post request to a web endpoint with the block info
@@ -444,7 +444,7 @@ Resources:
     NotifyErrorToWeb:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 512
+            MemorySize: 256
             Timeout: 10
             FunctionName: NotifyErrorToWeb
             Description: Send a post request to a web endpoint with the error user info
@@ -568,7 +568,7 @@ Resources:
     ApiCreateUser:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 1024
+            MemorySize: 256
             Timeout: 20
             FunctionName: ApiCreateUser
             Description: Handles creation of a user in dynamo db Users table
@@ -590,7 +590,7 @@ Resources:
     ApiDeleteUser:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 1024
+            MemorySize: 256
             Timeout: 20
             FunctionName: ApiDeleteUser
             Description: Handles deletion of a user in dynamo db Users table
@@ -612,7 +612,7 @@ Resources:
     ApiUpdateUser:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 1024
+            MemorySize: 256
             Timeout: 20
             FunctionName: ApiUpdateUser
             Description: Handles update of a user in dynamo db Users table

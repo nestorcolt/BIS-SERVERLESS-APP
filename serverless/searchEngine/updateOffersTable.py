@@ -28,6 +28,5 @@ def function_handler(event, context):
         controller.update_user_stats(user, validated=int(validated), offer=1)
 
     controller.put_new_offer(user, validated, data)
-    log.info(f"New entry created for user {user} on the offers table. Data: {data}")
 
 ##############################################################################################

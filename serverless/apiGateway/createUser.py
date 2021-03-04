@@ -23,7 +23,7 @@ def function_handler(event, context):
     new_headers["access_token"] = ""
 
     try:
-        dynamo_manager.create_item(constants.USERS_TABLE_NAME, dictionary_item=new_headers)
+        response = dynamo_manager.create_item(constants.USERS_TABLE_NAME, dictionary_item=new_headers)
     except Exception as e:
         log.error(e)
         message = e
