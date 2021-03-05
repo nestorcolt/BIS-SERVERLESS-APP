@@ -1,5 +1,6 @@
 from Cloud.packages.constants import constants
 from Cloud.packages.dynamo import controller
+from Cloud.packages.utilities import utils
 from Cloud.packages.sns import sns_manager
 from Cloud.packages.sqs import sqs_manager
 from aws_lambda_powertools import Tracer
@@ -8,6 +9,7 @@ import simplejson
 
 LOGGER = logger.Logger(__name__)
 log = LOGGER.logger
+
 
 ##############################################################################################
 tracer = Tracer()
@@ -21,10 +23,12 @@ def function_handler(event, context):
     :return:
     """
     last_active = controller.get_last_active_users()
+    wait_search_value = 60  # in seconds
 
     for user_data in last_active["Items"]:
         search_blocks = user_data.get("search_blocks")
         access_token = user_data.get("access_token", "")
+        last_iteration = user_data.get("last_iteration", 0)
 
         if not search_blocks:
             continue
@@ -32,8 +36,6 @@ def function_handler(event, context):
         # This means an user is on a queue to be process and will avoid the over iteration while the current
         # task is not done yet avoiding duplicate task on this user ahead in the flow
         user_id = user_data.get(constants.TABLE_PK)
-        if sqs_manager.get_user_in_queue_body(user_id, constants.SE_ON_PROCESS):
-            continue
 
         if len(access_token) < 10 or not access_token.startswith("Atna|"):
             log.info(f"User {user_id} is being authenticated ...")
@@ -43,8 +45,12 @@ def function_handler(event, context):
                                              subject="Get access token for user")
             continue
 
-        # If passed all validations let user search
-        sqs_manager.send_message_to_queue(queue_name=constants.SE_START_QUEUE,
-                                          message=simplejson.dumps(user_data, use_decimal=True))
+        # calculates the difference between the current time and the registered time from user item
+        last_iteration_difference = abs(min(0, last_iteration - utils.get_unix_time()))
+
+        if last_iteration_difference > wait_search_value:
+            # If passed all validations let user search
+            sqs_manager.send_message_to_queue(queue_name=constants.SE_START_QUEUE,
+                                              message=simplejson.dumps(user_data, use_decimal=True))
 
 ##############################################################################################

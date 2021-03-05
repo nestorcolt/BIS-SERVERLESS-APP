@@ -149,7 +149,6 @@ Resources:
             BuildMethod: python3.6
 
     # SQS section ---------------------------------------------------------------------------------------
-
     GetUserBlocksQueue:
         Type: AWS::SQS::Queue
         Properties:
@@ -158,58 +157,6 @@ Resources:
             MessageRetentionPeriod: 60
             VisibilityTimeout: 30
             DelaySeconds: 1
-
-    SeOnProcessQueue:
-        Type: AWS::SQS::Queue
-        Properties:
-            QueueName: SeOnProcessQueue
-            ReceiveMessageWaitTimeSeconds: 1
-            MessageRetentionPeriod: 60
-            VisibilityTimeout: 0
-
-    myQueuePolicy:
-        Type: AWS::SQS::QueuePolicy
-        Properties:
-            Queues:
-                - !Ref SeOnProcessQueue
-            PolicyDocument:
-                Statement:
-                    Effect: Allow
-                    Principal: "*"
-                    Action: "sqs:*"
-                    Resource: "*"
-
-    AuthenticateSubscriptionQueue:
-        Type: AWS::SNS::Subscription
-        Properties:
-            Endpoint: !GetAtt SeOnProcessQueue.Arn
-            Protocol: sqs
-            RawMessageDelivery: true
-            TopicArn: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-AUTHENTICATE-TOPIC'
-
-    ErrorSubscriptionQueue:
-        Type: AWS::SNS::Subscription
-        Properties:
-            Endpoint: !GetAtt SeOnProcessQueue.Arn
-            Protocol: sqs
-            RawMessageDelivery: true
-            TopicArn: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-ERROR-TOPIC'
-
-    SleepSubscriptionQueue:
-        Type: AWS::SNS::Subscription
-        Properties:
-            Endpoint: !GetAtt SeOnProcessQueue.Arn
-            Protocol: sqs
-            RawMessageDelivery: true
-            TopicArn: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-SLEEP-TOPIC'
-
-    StopSubscriptionQueue:
-        Type: AWS::SNS::Subscription
-        Properties:
-            Endpoint: !GetAtt SeOnProcessQueue.Arn
-            Protocol: sqs
-            RawMessageDelivery: true
-            TopicArn: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-STOP-TOPIC'
 
     # Lambdas section ---------------------------------------------------------------------------------------
     FlexSmIterator:
