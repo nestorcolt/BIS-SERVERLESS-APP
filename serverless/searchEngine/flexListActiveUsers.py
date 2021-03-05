@@ -10,7 +10,6 @@ import simplejson
 LOGGER = logger.Logger(__name__)
 log = LOGGER.logger
 
-
 ##############################################################################################
 tracer = Tracer()
 
@@ -46,7 +45,7 @@ def function_handler(event, context):
             continue
 
         # calculates the difference between the current time and the registered time from user item
-        last_iteration_difference = abs(min(0, last_iteration - utils.get_unix_time()))
+        last_iteration_difference = abs(min(0, float(last_iteration) - utils.get_unix_time()))
 
         if last_iteration_difference > wait_search_value:
             # If passed all validations let user search

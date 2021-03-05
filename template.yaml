@@ -153,9 +153,9 @@ Resources:
         Type: AWS::SQS::Queue
         Properties:
             QueueName: GetUserBlocksQueue
-            ReceiveMessageWaitTimeSeconds: 0
+            ReceiveMessageWaitTimeSeconds: 1
             MessageRetentionPeriod: 60
-            VisibilityTimeout: 30
+            VisibilityTimeout: 65
             DelaySeconds: 1
 
     # Lambdas section ---------------------------------------------------------------------------------------
