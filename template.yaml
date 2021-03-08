@@ -69,9 +69,7 @@ Resources:
             KeySchema:
                 -   AttributeName: user_id
                     KeyType: HASH
-            ProvisionedThroughput:
-                ReadCapacityUnits: 10
-                WriteCapacityUnits: 10
+            BillingMode: PAY_PER_REQUEST
 
     BlocksTable:
         Type: AWS::DynamoDB::Table
@@ -94,9 +92,7 @@ Resources:
             TimeToLiveSpecification:
                 AttributeName: tll_attr
                 Enabled: true
-            ProvisionedThroughput:
-                ReadCapacityUnits: 10
-                WriteCapacityUnits: 10
+            BillingMode: PAY_PER_REQUEST
 
     OffersTable:
         Type: AWS::DynamoDB::Table
@@ -119,9 +115,7 @@ Resources:
             TimeToLiveSpecification:
                 AttributeName: tll_attr
                 Enabled: true
-            ProvisionedThroughput:
-                ReadCapacityUnits: 50
-                WriteCapacityUnits: 50
+            BillingMode: PAY_PER_REQUEST
 
             GlobalSecondaryIndexes:
                 -   IndexName: Offers_GSI1
@@ -130,9 +124,6 @@ Resources:
                             KeyType: HASH
                     Projection:
                         ProjectionType: ALL
-                    ProvisionedThroughput:
-                        ReadCapacityUnits: 50
-                        WriteCapacityUnits: 50
 
     # Lambda layers ----------------------------------------------------------------------------------------
     CustomAppLayers:
