@@ -307,7 +307,7 @@ Resources:
             FunctionName: ResetUserStats
             Description: set back to zero all the stats atomic counters from all users on statistics table
             CodeUri: serverless/searchEngine/
-            Handler: resetUserStats.lambda_handler
+            Handler: resetUserStats.function_handler
             Layers:
                 - !Ref CustomAppLayers
             Policies:
