@@ -20,6 +20,11 @@ def function_handler():
         dynamo_manager.update_item("Users", "user_id", user_id, update_item)
 
 
+def switch_user_state(user_id, value):
+    dynamo_manager.update_item("Users", "user_id", user_id, {"search_blocks": value})
+
+
 ##############################################################################################
 if __name__ == '__main__':
-    function_handler()
+    # function_handler()
+    switch_user_state("5", False)

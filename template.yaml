@@ -147,6 +147,15 @@ Resources:
             VisibilityTimeout: 65
             DelaySeconds: 2
 
+    PowerTunningQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+            QueueName: PowerTunningQueue
+            ReceiveMessageWaitTimeSeconds: 10
+            MessageRetentionPeriod: 60
+            VisibilityTimeout: 65
+            DelaySeconds: 10
+
     # Lambdas section ---------------------------------------------------------------------------------------
     FlexSmIterator:
         Type: AWS::Serverless::Function
