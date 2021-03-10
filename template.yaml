@@ -142,10 +142,10 @@ Resources:
         Type: AWS::SQS::Queue
         Properties:
             QueueName: GetUserBlocksQueue
-            ReceiveMessageWaitTimeSeconds: 1
+            ReceiveMessageWaitTimeSeconds: 2
             MessageRetentionPeriod: 60
             VisibilityTimeout: 65
-            DelaySeconds: 1
+            DelaySeconds: 2
 
     # Lambdas section ---------------------------------------------------------------------------------------
     FlexSmIterator:
