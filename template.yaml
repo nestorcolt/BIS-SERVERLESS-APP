@@ -321,11 +321,6 @@ Resources:
                 - !Ref CustomAppLayers
             Policies:
                 - AmazonDynamoDBFullAccess
-            Events:
-                StartScheduledEvent:
-                    Type: Schedule
-                    Properties:
-                        Schedule: cron(0 0 * * ? *)
 
     UpdateBlocksTable:
         Type: AWS::Serverless::Function
