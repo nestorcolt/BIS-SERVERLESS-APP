@@ -9,10 +9,11 @@ Globals:
             -   Fn::ImportValue: python-packages-layer-version # Importing the layer from a different stack
 
 Resources:
-    IterStateMachineLogs:
+
+    StateIteratorLogs001:
         Type: AWS::Logs::LogGroup
         Properties:
-            LogGroupName: StateIteratorLogs
+            LogGroupName: StateIteratorLogs001
             RetentionInDays: 7
 
     # state machine  ----------------------------------------------------------------------------------------
@@ -32,7 +33,7 @@ Resources:
             Logging:
                 Destinations:
                     -   CloudWatchLogsLogGroup:
-                            LogGroupArn: !GetAtt IterStateMachineLogs.Arn
+                            LogGroupArn: !GetAtt StateIteratorLogs001.Arn
                 IncludeExecutionData: true
                 Level: ALL
             Policies:
