@@ -181,6 +181,22 @@ Resources:
                 - AWSLambdaFullAccess
                 - AWSStepFunctionsFullAccess
 
+    UpdateStatsTable:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 512
+            Timeout: 10
+            FunctionName: UpdateStatsTable
+            Description: Update the atomic counters from the stats table
+            CodeUri: serverless/searchEngine/
+            Handler: updateStatsCounter.function_handler
+            Layers:
+                - !Ref CustomAppLayers
+            Policies:
+                - AmazonSNSFullAccess
+                - AmazonDynamoDBFullAccess
+                - AWSLambdaDynamoDBExecutionRole
+
     SleepSearchEngine:
         Type: AWS::Serverless::Function
         Properties:
