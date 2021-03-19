@@ -189,13 +189,19 @@ Resources:
             FunctionName: UpdateStatsTable
             Description: Update the atomic counters from the stats table
             CodeUri: serverless/searchEngine/
-            Handler: updateStatsCounter.function_handler
+            Handler: updateStatsTable.function_handler
             Layers:
                 - !Ref CustomAppLayers
             Policies:
-                - AmazonSNSFullAccess
                 - AmazonDynamoDBFullAccess
                 - AWSLambdaDynamoDBExecutionRole
+            Events:
+                Stream:
+                    Type: DynamoDB
+                    Properties:
+                        Stream: !GetAtt OffersTable.StreamArn
+                        BatchSize: 10
+                        StartingPosition: TRIM_HORIZON
 
     SleepSearchEngine:
         Type: AWS::Serverless::Function

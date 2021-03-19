@@ -1,6 +1,6 @@
+from Cloud.packages.dynamo import controller
 from aws_lambda_powertools import Tracer
 from Cloud.packages import logger
-import json
 
 LOGGER = logger.Logger(__name__)
 log = LOGGER.logger
@@ -28,7 +28,15 @@ def function_handler(event, context):
 ##############################################################################################
 
 def record_handler(record):
-    new_image = record["dynamodb"]["NewImage"]
-    old_image = record["dynamodb"]["OldImage"]
+    old_image = record["dynamodb"].get("OldImage", None)
 
-    print(new_image)
+    if old_image is None:
+        user_id = record["dynamodb"]["Keys"]["user_id"]["S"]
+        new_image = record["dynamodb"].get("NewImage")
+        validated = new_image["validated"]["BOOL"]
+
+        # raise counter, if there is no old image that means the record is new
+        controller.update_user_stats(user_id, validated=int(validated), offer=1)
+        return
+
+##############################################################################################
