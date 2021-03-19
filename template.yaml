@@ -2,6 +2,16 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: SAM Template for BIS-Cloud
 
+Parameters:
+    StatsTableBatchSize:
+        Type: Number
+        Default: 20
+        Description: To adjust the trigger once we scale on users
+    StatsTableBatchWindow:
+        Type: Number
+        Default: 30
+        Description: To adjust the trigger once we scale on users
+
 Globals:
     Function:
         Runtime: python3.6
@@ -200,7 +210,8 @@ Resources:
                     Type: DynamoDB
                     Properties:
                         Stream: !GetAtt OffersTable.StreamArn
-                        BatchSize: 10
+                        BatchSize: !Ref StatsTableBatchSize
+                        MaximumBatchingWindowInSeconds: !Ref StatsTableBatchWindow
                         StartingPosition: TRIM_HORIZON
 
     SleepSearchEngine:
