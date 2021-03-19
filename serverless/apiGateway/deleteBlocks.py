@@ -1,23 +1,25 @@
 from Cloud.packages.constants import constants
 from Cloud.packages.dynamo import controller
-# from aws_lambda_powertools import Tracer
+from Cloud.packages.sns import sns_manager
+from aws_lambda_powertools import Tracer
 from Cloud.packages import logger
 import json
 
 LOGGER = logger.Logger(__name__)
 log = LOGGER.logger
 
-
 ##############################################################################################
-# tracer = Tracer()
+tracer = Tracer()
 
 
-# @tracer.capture_lambda_handler
+@tracer.capture_lambda_handler
 def function_handler(event, context):
     body = event.get("body")
 
     if body is None:
         # send to sns event to delete all items with C# (faster)
+        topic_arn = sns_manager.get_topic_by_name("DropBlocksTable")[0]["TopicArn"]
+        sns_manager.sns_publish_to_topic(topic_arn=topic_arn, message=None, subject=None)
         return "OK"
 
     user_id = json.loads(body).get(constants.TABLE_PK)
