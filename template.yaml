@@ -52,6 +52,20 @@ Resources:
                 - CloudWatchLogsFullAccess
 
     # dynamo db  ----------------------------------------------------------------------------------------
+    SettingsTable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+            TableName: Settings
+            StreamSpecification:
+                StreamViewType: NEW_AND_OLD_IMAGES
+            AttributeDefinitions:
+                -   AttributeName: version
+                    AttributeType: S
+            KeySchema:
+                -   AttributeName: version
+                    KeyType: HASH
+            BillingMode: PAY_PER_REQUEST
+
     DynamoDBTable:
         Type: AWS::DynamoDB::Table
         Properties:

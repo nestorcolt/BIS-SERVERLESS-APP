@@ -33,6 +33,7 @@ def function_handler(event, context):
         # calculates the difference between the current time and the registered time from user item
         last_iteration_difference = abs(min(0, float(last_iteration) - utils.get_unix_time()))
 
+        return
         if last_iteration_difference > wait_search_value:
             # If passed all validations let user search
             topic_arn = sns_manager.get_topic_by_name(constants.SE_START_TOPIC)[0]["TopicArn"]
