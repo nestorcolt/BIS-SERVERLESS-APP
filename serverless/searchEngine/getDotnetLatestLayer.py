@@ -8,11 +8,13 @@ TARGET_LAYER_NAME = "DotnetCloudLibrary"
 
 def function_handler(event, context):
     layer_version = get_latest_layer()
-    
+    fragment = event['fragment']
+    fragment["Layers"] = [layer_version]
+
     return {
         'requestId': event['requestId'],
         'status': 'success',
-        'fragment': layer_version
+        'fragment': fragment
     }
 
 

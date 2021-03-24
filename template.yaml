@@ -19,12 +19,12 @@ Globals:
             -   Fn::ImportValue: python-packages-layer-version # Importing the layer from a different stack
 
 Resources:
-    CsharpLayersCloudFormationMacro:
+    DotnetLayersCloudFormationMacro:
         Type: AWS::CloudFormation::Macro
         Properties:
-            Name: CsharpLayersCloudFormationMacro
+            Name: DotnetLayersCloudFormationMacro
             Description: Get the latest layer version of the C# libraries
-            FunctionName: !Ref GetCshaprLatestLayer
+            FunctionName: !Ref GetDotnetLatestLayer
 
     StateIteratorLogs001:
         Type: AWS::Logs::LogGroup
@@ -201,15 +201,15 @@ Resources:
             TopicName: "DropBlocksTable"
 
     # Lambdas section ---------------------------------------------------------------------------------------
-    GetCshaprLatestLayer:
+    GetDotnetLatestLayer:
         Type: AWS::Serverless::Function
         Properties:
             MemorySize: 256
             Timeout: 20
-            FunctionName: GetCshaprLatestLayer
+            FunctionName: GetDotnetLatestLayer
             Description: Get the latest layer version of the C# libraries
             CodeUri: serverless/searchEngine/
-            Handler: getLatestCsharpLayer.function_handler
+            Handler: getDotnetLatestLayer.function_handler
             Layers:
                 - !Ref CustomAppLayers
             Policies:
