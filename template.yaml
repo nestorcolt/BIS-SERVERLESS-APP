@@ -655,6 +655,28 @@ Resources:
                         Path: /users
                         Method: put
 
+    GetUserStatistics:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 256
+            Timeout: 20
+            FunctionName: GetUserStatistics
+            Description: HGet the user status to present then in the front end
+            CodeUri: serverless/apiGateway/
+            Handler: updateUser.function_handler
+            Layers:
+                - !Ref CustomAppLayers
+            Policies:
+                - AmazonDynamoDBFullAccess
+                - AmazonAPIGatewayInvokeFullAccess
+            Events:
+                BisApiGateway:
+                    Type: Api
+                    Properties:
+                        RestApiId: !Ref MainApi
+                        Path: /users
+                        Method: get
+
     ApiReadUserBlocks:
         Type: AWS::Serverless::Function
         Properties:
@@ -697,8 +719,8 @@ Resources:
                     Type: Api
                     Properties:
                         RestApiId: !Ref MainApi
-                        Path: /deleteBlocks
-                        Method: post
+                        Path: /blocks
+                        Method: delete
 
 Outputs:
     Region:
