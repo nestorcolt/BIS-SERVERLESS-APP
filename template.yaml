@@ -246,10 +246,18 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - AWSLambdaDynamoDBExecutionRole
             Events:
-                Stream:
+                StreamOffers:
                     Type: DynamoDB
                     Properties:
                         Stream: !GetAtt OffersTable.StreamArn
+                        BatchSize: !Ref StatsTableBatchSize
+                        MaximumBatchingWindowInSeconds: !Ref StatsTableBatchWindow
+                        StartingPosition: TRIM_HORIZON
+
+                StreamBlocks:
+                    Type: DynamoDB
+                    Properties:
+                        Stream: !GetAtt BlocksTable.StreamArn
                         BatchSize: !Ref StatsTableBatchSize
                         MaximumBatchingWindowInSeconds: !Ref StatsTableBatchWindow
                         StartingPosition: TRIM_HORIZON
