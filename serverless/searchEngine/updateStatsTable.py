@@ -39,11 +39,11 @@ def record_handler(record):
 
         if validated is None:
             controller.update_user_stats(user_id=user_id, accepted=1)  # + 1 offer append to the existing counter
-            return
         else:
             validated_value = validated["BOOL"]
             # raise counter, if there is no old image that means the record is new
             controller.update_user_stats(user_id, validated=int(validated_value), offer=1)
-            return
 
+        # return when old image is None because this means is a new entry with only NewImage
+        return True
 ##############################################################################################
