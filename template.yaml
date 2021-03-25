@@ -404,26 +404,6 @@ Resources:
             Policies:
                 - AmazonDynamoDBFullAccess
 
-    UpdateBlocksTable:
-        Type: AWS::Serverless::Function
-        Properties:
-            MemorySize: 128
-            Timeout: 5
-            FunctionName: UpdateBlocksTable
-            Description: Handles the update of blocks table with the blocks info
-            CodeUri: serverless/searchEngine/
-            Handler: updateBlocksTable.function_handler
-            Layers:
-                - !Ref CustomAppLayers
-            Policies:
-                - AmazonSNSFullAccess
-                - AmazonDynamoDBFullAccess
-            Events:
-                SNSEvent:
-                    Type: SNS
-                    Properties:
-                        Topic: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-ACCEPTED-TOPIC'
-
     NotifyBlockToWeb:
         Type: AWS::Serverless::Function
         Properties:
