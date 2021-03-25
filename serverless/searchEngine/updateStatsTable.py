@@ -33,10 +33,17 @@ def record_handler(record):
     if old_image is None:
         user_id = record["dynamodb"]["Keys"]["user_id"]["S"]
         new_image = record["dynamodb"].get("NewImage")
-        validated = new_image["validated"]["BOOL"]
 
-        # raise counter, if there is no old image that means the record is new
-        controller.update_user_stats(user_id, validated=int(validated), offer=1)
-        return
+        # If validated is not present is because this stream comes from the Blocks table
+        validated = new_image.get("validated", None)
+
+        if validated is None:
+            controller.update_user_stats(user_id=user_id, accepted=1)  # + 1 offer append to the existing counter
+            return
+        else:
+            validated_value = validated["BOOL"]
+            # raise counter, if there is no old image that means the record is new
+            controller.update_user_stats(user_id, validated=int(validated_value), offer=1)
+            return
 
 ##############################################################################################
