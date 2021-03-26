@@ -177,14 +177,21 @@ Resources:
             BuildMethod: python3.6
 
     # SQS section ---------------------------------------------------------------------------------------
-    GetUserBlocksQueue:
+    UpdateOffersTableQueue:
         Type: AWS::SQS::Queue
         Properties:
-            QueueName: GetUserBlocksQueue
-            ReceiveMessageWaitTimeSeconds: 2
-            MessageRetentionPeriod: 60
-            VisibilityTimeout: 65
-            DelaySeconds: 2
+            QueueName: UpdateOffersTableQueue
+            MessageRetentionPeriod: 300
+            VisibilityTimeout: 300
+            DelaySeconds: 0
+
+    UpdateBlocksTableQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+            QueueName: UpdateBlocksTableQueue
+            MessageRetentionPeriod: 300
+            VisibilityTimeout: 300
+            DelaySeconds: 0
 
     PowerTunningQueue:
         Type: AWS::SQS::Queue
@@ -194,6 +201,7 @@ Resources:
             MessageRetentionPeriod: 60
             VisibilityTimeout: 65
             DelaySeconds: 10
+
     # SNS section ---------------------------------------------------------------------------------------
     DropBlocksTable:
         Type: AWS::SNS::Topic
