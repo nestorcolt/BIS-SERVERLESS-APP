@@ -690,6 +690,29 @@ Resources:
                         Path: /blocks
                         Method: delete
 
+    ApiFlexBlockCheckIn:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 512
+            Timeout: 5
+            FunctionName: ApiFlexBlockCheckIn
+            Description: Makes the distant check in for the user block parsed iin the body message
+            CodeUri: serverless/apiGateway/
+            Handler: flexBlockCheckIn.function_handler
+            Layers:
+                - !Ref CustomAppLayers
+            Policies:
+                - AmazonDynamoDBFullAccess
+                - AmazonAPIGatewayInvokeFullAccess
+                - AmazonSNSFullAccess
+            Events:
+                BisApiGateway:
+                    Type: Api
+                    Properties:
+                        RestApiId: !Ref MainApi
+                        Path: /checkin
+                        Method: post
+
 Outputs:
     Region:
         Description: "Region"
