@@ -177,18 +177,22 @@ Resources:
             BuildMethod: python3.6
 
     # SQS section ---------------------------------------------------------------------------------------
-    UpdateOffersTableQueue:
+    UpdateOffersTableQueueFifo:
         Type: AWS::SQS::Queue
         Properties:
-            QueueName: UpdateOffersTableQueue
+            FifoQueue: true
+            ContentBasedDeduplication: true
+            QueueName: UpdateOffersTableQueue.fifo
             MessageRetentionPeriod: 300
             VisibilityTimeout: 300
             DelaySeconds: 0
 
-    UpdateBlocksTableQueue:
+    UpdateBlocksTableQueueFifo:
         Type: AWS::SQS::Queue
         Properties:
-            QueueName: UpdateBlocksTableQueue
+            FifoQueue: true
+            ContentBasedDeduplication: true
+            QueueName: UpdateBlocksTableQueue.fifo
             MessageRetentionPeriod: 300
             VisibilityTimeout: 300
             DelaySeconds: 0
