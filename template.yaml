@@ -5,11 +5,11 @@ Description: SAM Template for BIS-Cloud
 Parameters:
     StatsTableBatchSize:
         Type: Number
-        Default: 20
+        Default: 60
         Description: To adjust the trigger once we scale on users
     StatsTableBatchWindow:
         Type: Number
-        Default: 30
+        Default: 60
         Description: To adjust the trigger once we scale on users
 
 Globals:
