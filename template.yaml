@@ -202,6 +202,13 @@ Resources:
             VisibilityTimeout: 65
             DelaySeconds: 10
 
+    AcceptedBlockSqsSubscription:
+        Type: AWS::SNS::Subscription
+        Properties:
+            Endpoint: !GetAtt UpdateBlocksTableQueue.Arn
+            Protocol: sqs
+            TopicArn: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-ACCEPTED-TOPIC'
+
     # SNS section ---------------------------------------------------------------------------------------
     DropBlocksTable:
         Type: AWS::SNS::Topic
