@@ -177,7 +177,7 @@ Resources:
             BuildMethod: python3.6
 
     # SQS section ---------------------------------------------------------------------------------------
-    UpdateOffersTableQueueFifo:
+    UpdateOffersTableQueue:
         Type: AWS::SQS::Queue
         Properties:
             QueueName: UpdateOffersTableQueue
@@ -185,7 +185,7 @@ Resources:
             VisibilityTimeout: 300
             DelaySeconds: 0
 
-    UpdateBlocksTableQueueFifo:
+    UpdateBlocksTableQueue:
         Type: AWS::SQS::Queue
         Properties:
             QueueName: UpdateBlocksTableQueue
