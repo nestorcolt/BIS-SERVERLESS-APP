@@ -180,9 +180,7 @@ Resources:
     UpdateOffersTableQueueFifo:
         Type: AWS::SQS::Queue
         Properties:
-            FifoQueue: true
-            ContentBasedDeduplication: true
-            QueueName: UpdateOffersTableQueue.fifo
+            QueueName: UpdateOffersTableQueue
             MessageRetentionPeriod: 300
             VisibilityTimeout: 300
             DelaySeconds: 0
@@ -190,9 +188,7 @@ Resources:
     UpdateBlocksTableQueueFifo:
         Type: AWS::SQS::Queue
         Properties:
-            FifoQueue: true
-            ContentBasedDeduplication: true
-            QueueName: UpdateBlocksTableQueue.fifo
+            QueueName: UpdateBlocksTableQueue
             MessageRetentionPeriod: 300
             VisibilityTimeout: 300
             DelaySeconds: 0
