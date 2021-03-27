@@ -225,7 +225,7 @@ Resources:
             Layers:
                 - !Ref CustomAppLayers
             Policies:
-                - AWSLambdaFullAccess
+                - AWSLambda_FullAccess
                 - AWSStepFunctionsFullAccess
 
     FlexSmIterator:
@@ -240,7 +240,7 @@ Resources:
             Layers:
                 - !Ref CustomAppLayers
             Policies:
-                - AWSLambdaFullAccess
+                - AWSLambda_FullAccess
                 - AWSStepFunctionsFullAccess
 
     UpdateStatsTable:
@@ -374,7 +374,7 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - AmazonSNSFullAccess
                 - AmazonSQSFullAccess
-                - AWSLambdaFullAccess
+                - AWSLambda_FullAccess
 
     LogAllUsers:
         Type: AWS::Serverless::Function
@@ -391,7 +391,7 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - CloudWatchLogsFullAccess
                 - AmazonSNSFullAccess
-                - AWSLambdaFullAccess
+                - AWSLambda_FullAccess
 
     LogSingleUserData:
         Type: AWS::Serverless::Function
@@ -408,7 +408,7 @@ Resources:
                 - AmazonDynamoDBFullAccess
                 - CloudWatchLogsFullAccess
                 - AmazonSNSFullAccess
-                - AWSLambdaFullAccess
+                - AWSLambda_FullAccess
 
     ResetUserStats:
         Type: AWS::Serverless::Function
