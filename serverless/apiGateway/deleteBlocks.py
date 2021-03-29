@@ -15,6 +15,8 @@ tracer = Tracer()
 @tracer.capture_lambda_handler
 def function_handler(event, context):
     body = event.get("body")
+    message = "Success"
+    status_code = 200
 
     if body is None:
         # send to sns event to delete all items with C# (faster)
@@ -32,8 +34,15 @@ def function_handler(event, context):
             controller.delete_blocks(blocks)
 
     except Exception as e:
+        status_code = 501
         log.error(e)
+        message = e
 
-    return "OK"
+    return {
+        "statusCode": status_code,
+        "body": json.dumps({
+            "message": message,
+        }),
+    }
 
 ##############################################################################################

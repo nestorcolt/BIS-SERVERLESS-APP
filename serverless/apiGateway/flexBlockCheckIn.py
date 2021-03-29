@@ -15,7 +15,14 @@ tracer = Tracer()
 @tracer.capture_lambda_handler
 def function_handler(event, context):
     body = event.get("body")
+    status_code = 200
+    output = None
 
-    return "OK"
+    return {
+        "statusCode": status_code,
+        "body": json.dumps({
+            "message": output,
+        }),
+    }
 
 ##############################################################################################
