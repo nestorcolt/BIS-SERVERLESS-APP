@@ -13,11 +13,16 @@ log = LOGGER.logger
 
 def function_handler(event, context):
     body = event.get("body")
-    output = OrderedDict()
+    output = []
     status_code = 200
 
     if body is None:
-        return "Request Failed. body can't be empty"
+        return {
+            "statusCode": 410,
+            "body": json.dumps({
+                "message": "Body can't be empty.",
+            }),
+        }
 
     user_id = json.loads(body).get(constants.TABLE_PK)
 
@@ -28,7 +33,8 @@ def function_handler(event, context):
             for key, value in stats.items():
                 title = key.replace("_", " ").title()
                 val = str(value)
-                output[title] = val
+                output.append({title: val})
+
         else:
             output = "No data found for queried User"
             status_code = 502
