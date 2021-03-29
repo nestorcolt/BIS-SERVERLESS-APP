@@ -13,6 +13,8 @@ log = LOGGER.logger
 
 def function_handler(event, context):
     body = event.get("body")
+    output = OrderedDict()
+    status_code = 200
 
     if body is None:
         return "Request Failed. body can't be empty"
@@ -22,20 +24,24 @@ def function_handler(event, context):
     try:
         stats = logs_manager.get_user_stats(user_id)
 
-        if stats is None:
-            return {"status_code": "failed", "payload": {"Status": "No data found for queried User"}}
-
-        output = OrderedDict(dict())
-
-        for key, value in stats.items():
-            title = key.replace("_", " ").title()
-            val = str(value)
-            output[title] = val
+        if stats is not None:
+            for key, value in stats.items():
+                title = key.replace("_", " ").title()
+                val = str(value)
+                output[title] = val
+        else:
+            output = "No data found for queried User"
+            status_code = 502
 
     except Exception as e:
         log.error(e)
-        return {"status_code": "failed", "payload": {"Status": "Server Error"}}
+        status_code = 502
 
-    return {"status_code": "success", "payload": output}
+    return {
+        "statusCode": status_code,
+        "body": json.dumps({
+            "message": output,
+        }),
+    }
 
 ##############################################################################################

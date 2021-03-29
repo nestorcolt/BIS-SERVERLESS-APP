@@ -644,9 +644,9 @@ Resources:
             MemorySize: 256
             Timeout: 20
             FunctionName: GetUserStatistics
-            Description: HGet the user status to present then in the front end
+            Description: Get the user status to present then in the front end
             CodeUri: serverless/apiGateway/
-            Handler: updateUser.function_handler
+            Handler: getUserStatistics.function_handler
             Layers:
                 - !Ref CustomAppLayers
             Policies:
@@ -657,8 +657,8 @@ Resources:
                     Type: Api
                     Properties:
                         RestApiId: !Ref MainApi
-                        Path: /users
-                        Method: get
+                        Path: /stats
+                        Method: post
 
     ApiReadUserBlocks:
         Type: AWS::Serverless::Function
