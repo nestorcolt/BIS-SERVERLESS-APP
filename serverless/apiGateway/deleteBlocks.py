@@ -21,8 +21,13 @@ def function_handler(event, context):
     if body is None:
         # send to sns event to delete all items with C# (faster)
         topic_arn = sns_manager.get_topic_by_name("DropBlocksTable")[0]["TopicArn"]
-        sns_manager.sns_publish_to_topic(topic_arn=topic_arn, message=None, subject=None)
-        return "OK"
+        sns_manager.sns_publish_to_topic(topic_arn=topic_arn, message="", subject="")
+        return {
+            "statusCode": status_code,
+            "body": json.dumps({
+                "message": message,
+            }),
+        }
 
     user_id = json.loads(body).get(constants.TABLE_PK)
 

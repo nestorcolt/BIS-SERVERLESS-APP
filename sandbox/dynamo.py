@@ -1,6 +1,8 @@
 from Cloud.packages.dynamo import dynamo_manager
 from Cloud.packages.constants import constants
 from Cloud.packages.dynamo import controller
+import simplejson
+import json
 
 
 ######################################################
@@ -24,7 +26,17 @@ def switch_user_state(user_id, value):
     dynamo_manager.update_item("Users", "user_id", user_id, {"search_blocks": value})
 
 
+def get_offers(user_id):
+    """
+    """
+    offers = controller.get_offers(user_id)
+
+    for offer in offers:
+        data = offer["data"]
+        controller.put_new_block(user_id, data)
+
+
 ##############################################################################################
 if __name__ == '__main__':
     # function_handler()
-    switch_user_state("5", False)
+    get_offers("5")
