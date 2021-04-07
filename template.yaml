@@ -419,6 +419,11 @@ Resources:
                 - !Ref CustomAppLayers
             Policies:
                 - AmazonDynamoDBFullAccess
+            Events:
+                ResetStatsEvent:
+                    Type: Schedule
+                    Properties:
+                        Schedule: cron(1 0 * * ? *)
 
     NotifyBlockToWeb:
         Type: AWS::Serverless::Function
