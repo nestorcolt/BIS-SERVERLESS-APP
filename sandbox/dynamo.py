@@ -40,17 +40,14 @@ def get_offers(user_id):
     """
     """
     offers = controller.get_offers(user_id)
-    print(len(offers))
+
     for offer in offers:
         data = offer["data"]
         string = simplejson.dumps(data)
-
-        if string.__contains__("RESERVED"):
-            print(data)
-            break
+        print(string)
 
 
 ##############################################################################################
 if __name__ == '__main__':
     # function_handler()
-    get_offers("27")
+    get_offers("30")
