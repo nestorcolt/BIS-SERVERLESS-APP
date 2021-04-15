@@ -423,7 +423,7 @@ Resources:
                 ResetStatsEvent:
                     Type: Schedule
                     Properties:
-                        Schedule: cron(0 0 */2 * ? *)
+                        Schedule: rate(2 days)
 
     NotifyBlockToWeb:
         Type: AWS::Serverless::Function
