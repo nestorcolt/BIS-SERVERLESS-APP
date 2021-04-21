@@ -11,9 +11,13 @@ log = LOGGER.logger
 
 
 def function_handler(event, context):
+    """
+    Check in function, this will handle the api call for the amazon flex check in operation
+    :param event: AWS related
+    :param context: AWS related
+    :return: api response
+    """
     body = event.get("body")
-    status_code = 200
-    output = None
 
     user_id = ""
     longitude = ""
@@ -23,14 +27,23 @@ def function_handler(event, context):
         output = check_in_controller.check_in_block({"user_id": user_id,
                                                      "longitude": longitude,
                                                      "latitude": latitude})
+        response = output["response"]
+        message = output["message"]
+
+        status_code = response.status_code
+
+        if status_code == 200:
+            message = message + "Logout and login again in your Amazon Flex app to see the changes"
+
     except Exception as e:
         status_code = 400
+        message = "Something went wrong with the check-in operation"
         log.error(e)
 
     return {
         "statusCode": status_code,
         "body": json.dumps({
-            "message": output,
+            "message": message,
         }),
     }
 
