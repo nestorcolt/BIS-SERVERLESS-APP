@@ -19,9 +19,9 @@ def function_handler(event, context):
     """
     body = event.get("body")
 
-    user_id = ""
-    longitude = ""
-    latitude = ""
+    user_id = body.get("user_id")
+    longitude = body.get("longitude")
+    latitude = body.get("latitude")
 
     try:
         output = check_in_controller.check_in_block({"user_id": user_id,
