@@ -17,7 +17,7 @@ def function_handler(event, context):
     :param context: AWS related
     :return: api response
     """
-    body = event.get("body")
+    body = json.loads(event["body"])
 
     user_id = body.get("user_id")
     longitude = body.get("longitude")
