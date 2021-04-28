@@ -28,6 +28,6 @@ def lambda_handler(event, context):
                                           log_stream=sns_subject,
                                           message=sns_message)
 
-        log.info(f"logging info for {sns_subject}")
+        # log.info(f"logging info for {sns_subject}")
 
 ##############################################################################################
