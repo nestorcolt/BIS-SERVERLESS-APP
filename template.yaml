@@ -726,6 +726,28 @@ Resources:
                         Path: /checkin
                         Method: post
 
+    ApiGetUserData:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 512
+            Timeout: 5
+            FunctionName: ApiGetUserData
+            Description: Handles the reading of the user's blocks on the Blocks table
+            CodeUri: serverless/apiGateway/
+            Handler: getUserData.function_handler
+            Layers:
+                - !Ref CustomAppLayers
+            Policies:
+                - AmazonDynamoDBFullAccess
+                - AmazonAPIGatewayInvokeFullAccess
+            Events:
+                BisApiGatewayTest:
+                    Type: Api
+                    Properties:
+                        RestApiId: !Ref AuthApi
+                        Path: /userdata
+                        Method: post
+
 Outputs:
     Region:
         Description: "Region"
