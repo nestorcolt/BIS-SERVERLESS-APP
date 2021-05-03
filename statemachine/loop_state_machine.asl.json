@@ -6,7 +6,7 @@
             "Type": "Pass",
             "Result": {
                 "index": 0,
-                "count": 60
+                "count": 30
             },
             "ResultPath": "$.iterator",
             "Next": "Iterator"
@@ -30,7 +30,7 @@
         },
         "Wait": {
             "Type": "Wait",
-            "Seconds": 1,
+            "Seconds": 2,
             "Next": "Iterator"
         },
         "Done": {
