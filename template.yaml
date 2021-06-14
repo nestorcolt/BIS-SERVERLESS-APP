@@ -752,7 +752,7 @@ Resources:
         Type: AWS::Serverless::Function
         Properties:
             MemorySize: 512
-            Timeout: 5
+            Timeout: 20
             FunctionName: ApiGetBisUsers
             Description: read the users from aurora
             CodeUri: serverless/apiGateway/
@@ -762,6 +762,8 @@ Resources:
             Policies:
                 - SecretsManagerReadWrite
                 - AmazonAPIGatewayInvokeFullAccess
+                - AWSLambdaVPCAccessExecutionRole
+                - AmazonRDSReadOnlyAccess
             Events:
                 BisApiGatewayTest:
                     Type: Api
