@@ -748,6 +748,28 @@ Resources:
                         Path: /userdata
                         Method: post
 
+    ApiGetBisUsers:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 512
+            Timeout: 5
+            FunctionName: ApiGetBisUsers
+            Description: read the users from aurora
+            CodeUri: serverless/apiGateway/
+            Handler: getBisUsers.function_handler
+            Layers:
+                - !Ref CustomAppLayers
+            Policies:
+                - SecretsManagerReadWrite
+                - AmazonAPIGatewayInvokeFullAccess
+            Events:
+                BisApiGatewayTest:
+                    Type: Api
+                    Properties:
+                        RestApiId: !Ref AuthApi
+                        Path: /userlist
+                        Method: get
+
 Outputs:
     Region:
         Description: "Region"
