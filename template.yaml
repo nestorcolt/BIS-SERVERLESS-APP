@@ -425,6 +425,25 @@ Resources:
                     Properties:
                         Schedule: cron(0 1 * * ? *)
 
+    AutoCleanUpBlocksTable:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 2046
+            Timeout: 900
+            FunctionName: AutoCleanUpBlocksTable
+            Description: auto clean up blocks table every day at mid night UTC
+            CodeUri: serverless/searchEngine/
+            Handler: autoDeleteBlocks.function_handler
+            Layers:
+                - !Ref CustomAppLayers
+            Policies:
+                - AmazonDynamoDBFullAccess
+            Events:
+                ResetStatsEvent:
+                    Type: Schedule
+                    Properties:
+                        Schedule: cron(0 1 * * ? *)
+
     NotifyBlockToWeb:
         Type: AWS::Serverless::Function
         Properties:
