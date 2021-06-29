@@ -111,8 +111,6 @@ Resources:
                     AttributeType: S
                 -   AttributeName: block_id
                     AttributeType: N
-                -   AttributeName: station_id
-                    AttributeType: S
             KeySchema:
                 -   AttributeName: user_id
                     KeyType: HASH
@@ -122,14 +120,6 @@ Resources:
                 AttributeName: ttl_attr
                 Enabled: true
             BillingMode: PAY_PER_REQUEST
-
-            GlobalSecondaryIndexes:
-                -   IndexName: Offers_GSI1
-                    KeySchema:
-                        -   AttributeName: station_id
-                            KeyType: HASH
-                    Projection:
-                        ProjectionType: ALL
 
     OffersTable:
         Type: AWS::DynamoDB::Table
@@ -142,8 +132,6 @@ Resources:
                     AttributeType: S
                 -   AttributeName: offer_id
                     AttributeType: S
-                -   AttributeName: station_id
-                    AttributeType: S
             KeySchema:
                 -   AttributeName: user_id
                     KeyType: HASH
@@ -153,14 +141,6 @@ Resources:
                 AttributeName: ttl_attr
                 Enabled: true
             BillingMode: PAY_PER_REQUEST
-
-            GlobalSecondaryIndexes:
-                -   IndexName: Offers_GSI1
-                    KeySchema:
-                        -   AttributeName: station_id
-                            KeyType: HASH
-                    Projection:
-                        ProjectionType: ALL
 
     # Lambda layers ----------------------------------------------------------------------------------------
     CustomAppLayers:
