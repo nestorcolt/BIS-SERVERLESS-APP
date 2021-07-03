@@ -418,6 +418,7 @@ Resources:
                 - !Ref CustomAppLayers
             Policies:
                 - AmazonDynamoDBFullAccess
+                - AmazonSNSFullAccess
             Events:
                 ResetStatsEvent:
                     Type: Schedule
