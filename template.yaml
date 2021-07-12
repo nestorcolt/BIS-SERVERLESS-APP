@@ -157,13 +157,13 @@ Resources:
             BuildMethod: python3.6
 
     # SQS section ---------------------------------------------------------------------------------------
-    UpdateOffersTableQueue:
-        Type: AWS::SQS::Queue
-        Properties:
-            QueueName: UpdateOffersTableQueue
-            MessageRetentionPeriod: 300
-            VisibilityTimeout: 300
-            DelaySeconds: 0
+#    UpdateOffersTableQueue:
+#        Type: AWS::SQS::Queue
+#        Properties:
+#            QueueName: UpdateOffersTableQueue
+#            MessageRetentionPeriod: 300
+#            VisibilityTimeout: 300
+#            DelaySeconds: 0
 
     UpdateBlocksTableQueue:
         Type: AWS::SQS::Queue
