@@ -140,9 +140,9 @@ Resources:
         Type: AWS::SQS::Queue
         Properties:
             QueueName: UpdateOffersTableQueue
-            MessageRetentionPeriod: 300
-            VisibilityTimeout: 300
-            DelaySeconds: 0
+            MessageRetentionPeriod: 350
+            VisibilityTimeout: 1500
+            DelaySeconds: 900
 
     UpdateBlocksTableQueue:
         Type: AWS::SQS::Queue

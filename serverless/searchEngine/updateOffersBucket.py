@@ -1,7 +1,8 @@
 from Cloud.packages.s3 import controller as s3_controller
 from Cloud.packages.constants import constants as cns
-from Cloud.packages.dynamo import controller
+from Cloud.packages.sqs import sqs_manager
 from Cloud.packages import logger
+import boto3
 import json
 
 LOGGER = logger.Logger(__name__)
@@ -25,7 +26,7 @@ def lambda_handler(event, context):
         validated = body["validated"]
         user = body["user_id"]
         data = body["data"]
-        offer_dictionary = s3_controller.put_new_offer({}, user, validated, data)
+        offer_dictionary = s3_controller.put_new_offer(offer_dictionary, user, validated, data)
 
     # creates the new entry on dynamo block table
     s3_controller.put_object(cns.OFFERS_BUCKET_NAME,
