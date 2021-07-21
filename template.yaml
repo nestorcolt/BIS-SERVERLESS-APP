@@ -157,13 +157,13 @@ Resources:
             BuildMethod: python3.6
 
     # SQS section ---------------------------------------------------------------------------------------
-#    UpdateOffersTableQueue:
-#        Type: AWS::SQS::Queue
-#        Properties:
-#            QueueName: UpdateOffersTableQueue
-#            MessageRetentionPeriod: 300
-#            VisibilityTimeout: 300
-#            DelaySeconds: 0
+    UpdateOffersTableQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+            QueueName: UpdateOffersTableQueue
+            MessageRetentionPeriod: 300
+            VisibilityTimeout: 300
+            DelaySeconds: 0
 
     UpdateBlocksTableQueue:
         Type: AWS::SQS::Queue
@@ -334,6 +334,31 @@ Resources:
                     Type: SNS
                     Properties:
                         Topic: !Sub 'arn:aws:sns:us-east-1:${AWS::AccountId}:SE-LOGS-TOPIC'
+
+
+    UpdateOffersBucket:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 2048
+            Timeout: 300
+            FunctionName: UpdateOffersBucket
+            Description:
+            CodeUri: serverless/searchEngine/
+            Handler: updateOffersBucket.lambda_handler
+            Layers:
+                - !Ref CustomAppLayers
+            Policies:
+                - AmazonSQSFullAccess
+                - AmazonS3FullAccess
+                - CloudWatchLogsFullAccess
+            Events:
+                MySQSEvent:
+                    Type: SQS
+                    Properties:
+                        Queue: !GetAtt UpdateOffersTableQueue.Arn
+                        BatchSize: 10000
+                        MaximumBatchingWindowInSeconds: 295
+
 
     FlexListActiveUsers:
         Type: AWS::Serverless::Function
