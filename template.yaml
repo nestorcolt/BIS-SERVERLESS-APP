@@ -421,6 +421,26 @@ Resources:
                     Properties:
                         Schedule: cron(0 1 * * ? *)
 
+    UpdateOffersStats:
+        Type: AWS::Serverless::Function
+        Properties:
+            MemorySize: 1024
+            Timeout: 300
+            FunctionName: UpdateOffersStats
+            Description: update the atomic counters for the offers and validated offers every 30 minutes
+            CodeUri: serverless/searchEngine/
+            Handler: updateOffersStats.lambda_handler
+            Layers:
+                - !Ref CustomAppLayers
+            Policies:
+                - AmazonDynamoDBFullAccess
+                - AmazonS3FullAccess
+            Events:
+                ResetStatsEvent:
+                    Type: Schedule
+                    Properties:
+                        Schedule: cron(30 * * * ? *)
+
     NotifyBlockToWeb:
         Type: AWS::Serverless::Function
         Properties:
