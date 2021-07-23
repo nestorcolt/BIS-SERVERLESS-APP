@@ -121,6 +121,27 @@ Resources:
                 Enabled: true
             BillingMode: PAY_PER_REQUEST
 
+    OffersTable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+            TableName: Offers
+            StreamSpecification:
+                StreamViewType: NEW_AND_OLD_IMAGES
+            AttributeDefinitions:
+                -   AttributeName: user_id
+                    AttributeType: S
+                -   AttributeName: offer_id
+                    AttributeType: S
+            KeySchema:
+                -   AttributeName: user_id
+                    KeyType: HASH
+                -   AttributeName: offer_id
+                    KeyType: RANGE
+            TimeToLiveSpecification:
+                AttributeName: ttl_attr
+                Enabled: true
+            BillingMode: PAY_PER_REQUEST
+
     # Lambda layers ----------------------------------------------------------------------------------------
     CustomAppLayers:
         Type: AWS::Serverless::LayerVersion
