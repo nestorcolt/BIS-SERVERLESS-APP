@@ -23,10 +23,11 @@ def lambda_handler(event, context):
 
     for record in records:
         body = json.loads(record["body"])
-        validated = body["validated"]
-        user = body["user_id"]
-        data = body["data"]
-        offer_dictionary = s3_controller.put_new_offer(offer_dictionary, user, validated, data)
+        for offer in body:
+            validated = offer["validated"]
+            user = offer["user_id"]
+            data = offer["data"]
+            offer_dictionary = s3_controller.put_new_offer(offer_dictionary, user, validated, data)
 
     # creates the new entry on dynamo block table
     s3_controller.put_object(cns.OFFERS_BUCKET_NAME,
