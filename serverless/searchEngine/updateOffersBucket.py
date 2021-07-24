@@ -23,7 +23,7 @@ def lambda_handler(event, context):
 
     for record in records:
         body = json.loads(record["body"])
-        for offer in body:
+        for offer in body.values():
             validated = offer["validated"]
             user = offer["user_id"]
             data = offer["data"]
