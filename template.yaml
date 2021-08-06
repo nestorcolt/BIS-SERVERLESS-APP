@@ -32,6 +32,12 @@ Resources:
             LogGroupName: StateIteratorLogs001
             RetentionInDays: 7
 
+    SearchEngineLogs:
+        Type: AWS::Logs::LogGroup
+        Properties:
+            LogGroupName: Search-Engine-Logs
+            RetentionInDays: 1
+
     # state machine  ----------------------------------------------------------------------------------------
     IteratorStateMachine:
         Type: AWS::Serverless::StateMachine
