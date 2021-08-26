@@ -819,7 +819,7 @@ Resources:
     ApiGetCloudLogs:
         Type: AWS::Serverless::Function
         Properties:
-            MemorySize: 2084
+            MemorySize: 4096
             Timeout: 60
             FunctionName: ApiGetCloudLogs
             Description: Retreive the streams available in search-engine-logs
