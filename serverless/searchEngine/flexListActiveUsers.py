@@ -28,6 +28,7 @@ def function_handler(event, context):
     if not settings["search_engine"]:
         return
 
+    # last active is the value of the pause. Mean will get all the users that are allowed to run in search again. > 30 mins
     last_active = controller.get_last_active_users()
     wait_search_value = int(settings.get("search_timeout", 60))  # in seconds
 
